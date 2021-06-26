@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.roundtracker.rest;
+package com.github.szilex94.edu.round_tracker.rest;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
