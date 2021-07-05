@@ -22,7 +22,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file back-end/pom.xml
   docker:
-    name: Build and push
+    name: Build and push Docker Image
+    needs: build
     runs-on: ubuntu-latest
     steps: 
      - uses: docker/build-push-action@v2
