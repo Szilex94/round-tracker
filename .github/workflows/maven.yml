@@ -30,3 +30,4 @@ jobs:
        with:
           file: back-end/Dockerfile
           push: true
+          tags: round-tracker
