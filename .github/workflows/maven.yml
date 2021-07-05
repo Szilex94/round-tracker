@@ -31,3 +31,5 @@ jobs:
           push: true
           tags: user/app:latest
           file: back-end/Dockerfile
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.MYTOKEN }}
