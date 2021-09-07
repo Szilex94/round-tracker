@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 
 @SpringBootApplication
-@ComponentScan("com.github.szilex94.edu.roundtracker")
+@ComponentScan("com.github.szilex94.edu.round_tracker")
 public class RoundTrackerApplication {
 
 	public static void main(String[] args) {
