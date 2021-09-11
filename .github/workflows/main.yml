@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build And Publish Docker Image
 
 # Controls when the workflow will run
 on:
@@ -15,9 +15,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -33,13 +31,25 @@ jobs:
           distribution: 'adopt'
       - name: Build with Maven
         run: mvn clean install
+
+  create-and-publish-docker-image:
+    runs-on: ubuntu-latest
+    needs: build
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
         # Docker Stuff
       - name: Build and push Docker images
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: szilex93/test-github-actions
+          repository: szilex93/round-tracker-be
           tags: latest, ${{ github.run_number }}
+
         
         
