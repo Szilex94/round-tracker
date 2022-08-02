@@ -9,7 +9,7 @@ env:
 
 jobs:
   run-unit-tests:
-    uses: ./.github/workflows/run_unit_tests.yml
+    uses: ./.github/workflows/run-unit-tests.yml
     with:
       java-version: ${{ env.JAVA_VERSION }}
       distribution: ${{ env.JAVA_DISTRIBUTION }}
