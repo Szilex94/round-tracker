@@ -20,6 +20,6 @@ jobs:
         with:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.distribution }}
-#          cache: 'maven'
+          cache: 'maven'
       - name: Run Unit Tests
         run: mvn clean --batch-mode --update-snapshots test
