@@ -1,11 +1,10 @@
-name: Build & Publish Dev Branch
+name: Build & Publish Dev Branch as SNAPSHOT
 on:
   push:
     branches: [ dev ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/compile-sources.yml
     with:
       java-version: '17'
