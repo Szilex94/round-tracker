@@ -1,0 +1,14 @@
+name: On Pull Request Run Tests
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'master'
+      - 'dev'
+
+jobs:
+  run-unit-tests:
+    uses: ./.github/workflows/run-unit-tests.yml
+    with:
+      java-version: '17'
+      distribution: 'temurin'
