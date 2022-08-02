@@ -10,9 +10,9 @@ env:
 jobs:
   run-unit-tests:
     uses: ./.github/run_unit_tests.yml
-      with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: ${{ env.JAVA_DISTRIBUTION }}
+    with:
+      java-version: ${{ env.JAVA_VERSION }}
+      distribution: ${{ env.JAVA_DISTRIBUTION }}
 
   create-and-publish-docker-image:
     runs-on: ubuntu-latest
