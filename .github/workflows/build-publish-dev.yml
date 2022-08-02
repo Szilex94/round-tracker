@@ -13,11 +13,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
+#          cache: 'maven'
       - name: Compile Source
         run: mvn clean --batch-mode  compile
 
-  run-unit-tests:
+  unit-tests:
     needs: compile
     uses: ./.github/workflows/run-unit-tests.yml
     with:
@@ -26,7 +26,7 @@ jobs:
 
   create-and-publish-docker-image:
     runs-on: ubuntu-latest
-    needs: run-unit-tests
+    needs: unit-tests
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -34,7 +34,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
+#          cache: 'maven'
       - name: Build with Maven
         run: mvn clean --batch-mode package -DskipTests
       - name: Build and push Docker images
