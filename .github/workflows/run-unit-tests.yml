@@ -17,8 +17,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Set up JDK
         uses: actions/setup-java@v3
-         with:
+        with:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.distribution }}
-       - name: Run Unit Tests
+      - name: Run Unit Tests
         run: mvn clean test
