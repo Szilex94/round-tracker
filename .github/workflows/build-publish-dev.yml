@@ -3,15 +3,11 @@ on:
   push:
     branches: [ dev ]
 
-env:
-  JAVA_VERSION: '17'
-  JAVA_DISTRIBUTION: 'temurin'
-
 jobs:
   run-unit-tests:
     uses: ./.github/workflows/run-unit-tests.yml
     with:
-      java-version: ${{ env.JAVA_VERSION }}
+      java-version: '17'
       distribution: 'temurin'
 
   create-and-publish-docker-image:
@@ -22,8 +18,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3.4.1
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: '17'
+          distribution: 'temurin'
       - name: Build with Maven
         run: mvn clean install -DskipTests
       - name: Build and push Docker images
