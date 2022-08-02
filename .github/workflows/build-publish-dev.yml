@@ -11,7 +11,7 @@ jobs:
   run-unit-tests:
     uses: ./.github/workflows/run-unit-tests.yml
     with:
-      java-version: '17'
+      java-version: ${{ env.JAVA_VERSION }}
       distribution: 'temurin'
 
   create-and-publish-docker-image:
