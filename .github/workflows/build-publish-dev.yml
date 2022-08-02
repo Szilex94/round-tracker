@@ -4,7 +4,20 @@ on:
     branches: [ dev ]
 
 jobs:
+  compile:
+    runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set up JDK
+          uses: actions/setup-java@v3.4.1
+          with:
+            java-version: '17'
+            distribution: 'temurin'
+            cache: 'maven'
+        - name: Compile Source
+          run: mvn clean --batch-mode  compile
   run-unit-tests:
+    needs: compile
     uses: ./.github/workflows/run-unit-tests.yml
     with:
       java-version: '17'
@@ -22,7 +35,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build with Maven
-        run: mvn clean --batch-mode --quiet  package -DskipTests
+        run: mvn clean --batch-mode package -DskipTests
       - name: Build and push Docker images
         uses: docker/build-push-action@v1
         with:
