@@ -21,4 +21,4 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.distribution }}
       - name: Run Unit Tests
-        run: mvn clean test
+        run: mvn clean --batch-mode --update-snapshots test
