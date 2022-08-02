@@ -4,7 +4,6 @@ on:
   pull_request:
     branches-ignore:
       - 'master'
-      - 'dev'
 
 jobs:
   run-unit-tests:
