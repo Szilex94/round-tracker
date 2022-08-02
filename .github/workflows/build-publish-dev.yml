@@ -16,7 +16,7 @@ jobs:
 
   create-and-publish-docker-image:
     runs-on: ubuntu-latest
-    needs: build
+    needs: run-unit-tests
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
