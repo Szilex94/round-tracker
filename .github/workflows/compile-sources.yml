@@ -1,0 +1,25 @@
+name: Compile Java Sources
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: true
+        type: string
+      distribution:
+        required: true
+        type: string
+
+jobs:
+  compile-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.distribution }}
+          cache: 'maven'
+      - name: Compile
+        run: mvn clean --batch-mode --update-snapshots --quiet compile
