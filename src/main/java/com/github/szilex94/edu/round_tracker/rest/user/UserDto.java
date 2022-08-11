@@ -7,6 +7,8 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class UserDto {
 
+    private String id;
+
     @NotEmpty(message = "Null or empty first name not allowed!")
     private String firstName;
 
