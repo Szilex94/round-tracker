@@ -28,7 +28,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build with Maven
-        run: mvn clean --batch-mode --quiet package -DskipTests
+        run: mvn clean --batch-mode --quiet package spring-boot:repackage -DskipTests
       - name: Publish Docker Container
         uses: docker/build-push-action@v1
         with:
