@@ -1,10 +1,12 @@
 package com.github.szilex94.edu.round_tracker.rest.user;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
 
 @Data
+@Accessors(chain = true)
 public class UserDto {
 
     private String id;
