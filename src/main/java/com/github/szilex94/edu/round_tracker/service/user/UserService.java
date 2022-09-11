@@ -16,4 +16,11 @@ public interface UserService {
      * @return the user which was persisted
      */
     Mono<User> createNewUser(User user);
+
+    /**
+     * @param userId uuid created when the user was created
+     * @return the user associated with this id
+     * @throws IllegalArgumentException for null or empty input
+     */
+    Mono<User> retrieveById(String userId);
 }

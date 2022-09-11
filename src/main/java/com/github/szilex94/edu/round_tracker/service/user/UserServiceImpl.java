@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -24,6 +27,13 @@ public class UserServiceImpl implements UserService {
     public Mono<User> createNewUser(User user) {
         UserDao dao = this.mapper.toDao(user);
         return repository.save(dao)
+                .map(mapper::fromDao);
+    }
+
+    @Override
+    public Mono<User> retrieveById(String userId) {
+        checkArgument(!isNullOrEmpty(userId), "Null or empty userID not allowed!");
+        return repository.findById(userId)
                 .map(mapper::fromDao);
     }
 }
