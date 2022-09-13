@@ -1,8 +1,8 @@
 package com.github.szilex94.edu.round_tracker.service.user;
 
 import com.github.szilex94.edu.round_tracker.mappers.UserMapper;
-import com.github.szilex94.edu.round_tracker.repository.user.UserDao;
-import com.github.szilex94.edu.round_tracker.repository.user.UserRepository;
+import com.github.szilex94.edu.round_tracker.repository.user.UserProfileDao;
+import com.github.szilex94.edu.round_tracker.repository.user.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -15,10 +15,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper mapper;
-    private final UserRepository repository;
+    private final UserProfileRepository repository;
 
     @Autowired
-    public UserServiceImpl(UserMapper mapper, UserRepository repository) {
+    public UserServiceImpl(UserMapper mapper, UserProfileRepository repository) {
         this.mapper = mapper;
         this.repository = repository;
     }
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> createNewUser(User user) {
-        UserDao dao = this.mapper.toDao(user);
+        UserProfileDao dao = this.mapper.toDao(user);
         return repository.save(dao)
                 .map(mapper::fromDao);
     }

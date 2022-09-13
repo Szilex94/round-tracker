@@ -5,8 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document(collection = "users")
-public class UserDao {
+@Document(collection = "user.profile")
+public class UserProfileDao {
 
     @Id
     private String id;

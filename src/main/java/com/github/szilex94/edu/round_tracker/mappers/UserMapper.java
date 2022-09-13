@@ -1,6 +1,6 @@
 package com.github.szilex94.edu.round_tracker.mappers;
 
-import com.github.szilex94.edu.round_tracker.repository.user.UserDao;
+import com.github.szilex94.edu.round_tracker.repository.user.UserProfileDao;
 import com.github.szilex94.edu.round_tracker.rest.user.UserDto;
 import com.github.szilex94.edu.round_tracker.service.user.User;
 import org.mapstruct.Mapper;
@@ -12,8 +12,8 @@ public interface UserMapper {
 
     UserDto toDto(User user);
 
-    UserDao toDao(User user);
+    UserProfileDao toDao(User user);
 
-    User fromDao(UserDao dao);
+    User fromDao(UserProfileDao dao);
 
 }
