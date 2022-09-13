@@ -1,8 +1,10 @@
 package com.github.szilex94.edu.round_tracker.service.user.profile;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class UserProfile {
 
     /**
