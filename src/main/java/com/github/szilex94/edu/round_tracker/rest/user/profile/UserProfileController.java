@@ -1,7 +1,7 @@
 package com.github.szilex94.edu.round_tracker.rest.user.profile;
 
 import com.github.szilex94.edu.round_tracker.mappers.UserMapper;
-import com.github.szilex94.edu.round_tracker.service.user.profile.User;
+import com.github.szilex94.edu.round_tracker.service.user.profile.UserProfile;
 import com.github.szilex94.edu.round_tracker.service.user.profile.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class UserProfileController {
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public Mono<UserProfileDto> createUser(@Valid @RequestBody UserProfileDto userDto) {
-        User user = userMapper.fromDto(userDto);
+        UserProfile user = userMapper.fromDto(userDto);
         return userService.createNewUser(user)
                 .map(userMapper::toDto);
     }

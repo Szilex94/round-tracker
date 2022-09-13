@@ -2,18 +2,18 @@ package com.github.szilex94.edu.round_tracker.mappers;
 
 import com.github.szilex94.edu.round_tracker.repository.user.profile.UserProfileDao;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
-import com.github.szilex94.edu.round_tracker.service.user.profile.User;
+import com.github.szilex94.edu.round_tracker.service.user.profile.UserProfile;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    User fromDto(UserProfileDto dto);
+    UserProfile fromDto(UserProfileDto dto);
 
-    UserProfileDto toDto(User user);
+    UserProfileDto toDto(UserProfile user);
 
-    UserProfileDao toDao(User user);
+    UserProfileDao toDao(UserProfile user);
 
-    User fromDao(UserProfileDao dao);
+    UserProfile fromDao(UserProfileDao dao);
 
 }
