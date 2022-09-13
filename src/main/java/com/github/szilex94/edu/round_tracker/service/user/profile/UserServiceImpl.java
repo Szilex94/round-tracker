@@ -1,8 +1,8 @@
-package com.github.szilex94.edu.round_tracker.service.user;
+package com.github.szilex94.edu.round_tracker.service.user.profile;
 
 import com.github.szilex94.edu.round_tracker.mappers.UserMapper;
-import com.github.szilex94.edu.round_tracker.repository.user.UserProfileDao;
-import com.github.szilex94.edu.round_tracker.repository.user.UserProfileRepository;
+import com.github.szilex94.edu.round_tracker.repository.user.profile.UserProfileDao;
+import com.github.szilex94.edu.round_tracker.repository.user.profile.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

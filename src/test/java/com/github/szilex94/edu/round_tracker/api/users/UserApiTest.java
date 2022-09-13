@@ -1,6 +1,6 @@
 package com.github.szilex94.edu.round_tracker.api.users;
 
-import com.github.szilex94.edu.round_tracker.rest.user.UserDto;
+import com.github.szilex94.edu.round_tracker.rest.user.profile.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -39,7 +39,7 @@ public class UserApiTest {
                 .scheme("http")
                 .host("localhost")
                 .port(this.port)
-                .path("round-tracker/v1/users");
+                .path("round-tracker/v1/users/profiles");
     }
 
     @Test

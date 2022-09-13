@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.service.user;
+package com.github.szilex94.edu.round_tracker.service.user.profile;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.repository.user;
+package com.github.szilex94.edu.round_tracker.repository.user.profile;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;

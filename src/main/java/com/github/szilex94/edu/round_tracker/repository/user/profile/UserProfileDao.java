@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.repository.user;
+package com.github.szilex94.edu.round_tracker.repository.user.profile;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;

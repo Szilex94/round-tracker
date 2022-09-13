@@ -1,30 +1,28 @@
-package com.github.szilex94.edu.round_tracker.rest.user;
+package com.github.szilex94.edu.round_tracker.rest.user.profile;
 
 import com.github.szilex94.edu.round_tracker.mappers.UserMapper;
-import com.github.szilex94.edu.round_tracker.service.user.User;
-import com.github.szilex94.edu.round_tracker.service.user.UserService;
+import com.github.szilex94.edu.round_tracker.service.user.profile.User;
+import com.github.szilex94.edu.round_tracker.service.user.profile.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 
 @RestController
-@RequestMapping("round-tracker/v1/users")
-public class UserController {
+@RequestMapping("round-tracker/v1/users/profile")
+public class UserProfileController {
 
     private final UserMapper userMapper;
 
     private final UserService userService;
 
     @Autowired
-    public UserController(UserMapper userMapper, UserService userService) {
+    public UserProfileController(UserMapper userMapper, UserService userService) {
         this.userMapper = userMapper;
         this.userService = userService;
     }
@@ -43,9 +41,4 @@ public class UserController {
                 .map(userMapper::toDto);
     }
 
-    @GetMapping(produces = APPLICATION_NDJSON_VALUE)
-    public Flux<UserDto> getAll() {
-        return userService.getUsers()
-                .map(userMapper::toDto);
-    }
 }
