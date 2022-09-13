@@ -39,7 +39,7 @@ public class UserApiTest {
                 .scheme("http")
                 .host("localhost")
                 .port(this.port)
-                .path("round-tracker/v1/users/profiles");
+                .path("round-tracker/v1/users/profile");
     }
 
     @Test
