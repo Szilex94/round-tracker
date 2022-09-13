@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 
 @RestController
 @RequestMapping("round-tracker/v1/users")
@@ -38,6 +40,12 @@ public class UserController {
     public Mono<UserDto> getUser(@PathVariable String userId) {
         return userService.retrieveById(userId)
                 .switchIfEmpty(Mono.error(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
+                .map(userMapper::toDto);
+    }
+
+    @GetMapping(produces = APPLICATION_NDJSON_VALUE)
+    public Flux<UserDto> getAll() {
+        return userService.getUsers()
                 .map(userMapper::toDto);
     }
 }

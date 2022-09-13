@@ -1,5 +1,6 @@
 package com.github.szilex94.edu.round_tracker.service.user;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
@@ -23,4 +24,6 @@ public interface UserService {
      * @throws IllegalArgumentException for null or empty input
      */
     Mono<User> retrieveById(String userId);
+
+    Flux<User> getUsers();
 }

@@ -5,6 +5,7 @@ import com.github.szilex94.edu.round_tracker.repository.user.UserDao;
 import com.github.szilex94.edu.round_tracker.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -34,6 +35,12 @@ public class UserServiceImpl implements UserService {
     public Mono<User> retrieveById(String userId) {
         checkArgument(!isNullOrEmpty(userId), "Null or empty userID not allowed!");
         return repository.findById(userId)
+                .map(mapper::fromDao);
+    }
+
+    @Override
+    public Flux<User> getUsers() {
+        return repository.findAll()
                 .map(mapper::fromDao);
     }
 }
