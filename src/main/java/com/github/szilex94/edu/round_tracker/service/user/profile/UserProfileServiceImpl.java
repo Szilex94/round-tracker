@@ -5,20 +5,19 @@ import com.github.szilex94.edu.round_tracker.repository.user.profile.UserProfile
 import com.github.szilex94.edu.round_tracker.repository.user.profile.UserProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserProfileServiceImpl implements UserProfileService {
 
     private final UserMapper mapper;
     private final UserProfileRepository repository;
 
     @Autowired
-    public UserServiceImpl(UserMapper mapper, UserProfileRepository repository) {
+    public UserProfileServiceImpl(UserMapper mapper, UserProfileRepository repository) {
         this.mapper = mapper;
         this.repository = repository;
     }
@@ -38,9 +37,4 @@ public class UserServiceImpl implements UserService {
                 .map(mapper::fromDao);
     }
 
-    @Override
-    public Flux<User> getUsers() {
-        return repository.findAll()
-                .map(mapper::fromDao);
-    }
 }

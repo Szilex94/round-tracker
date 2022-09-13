@@ -1,6 +1,6 @@
 package com.github.szilex94.edu.round_tracker.api.users;
 
-import com.github.szilex94.edu.round_tracker.rest.user.profile.UserDto;
+import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,9 +44,9 @@ public class UserApiTest {
 
     @Test
     public void tes_createUser() {
-        UserDto userDto = createRequestObject();
+        UserProfileDto userDto = createRequestObject();
 
-        var result = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserDto.class);
+        var result = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
 
         assertSame(HttpStatus.OK, result.getStatusCode());
         var body = result.getBody();
@@ -59,13 +59,13 @@ public class UserApiTest {
 
     @ParameterizedTest
     @MethodSource("createUserExceptionalCasesDataSource")
-    public void test_createUser_exceptionalCases(UserDto requestBody) {
-        var result = this.testRestTemplate.postForEntity(getBasePath().toUriString(), requestBody, UserDto.class);
+    public void test_createUser_exceptionalCases(UserProfileDto requestBody) {
+        var result = this.testRestTemplate.postForEntity(getBasePath().toUriString(), requestBody, UserProfileDto.class);
         assertSame(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 
-    private static Stream<UserDto> createUserExceptionalCasesDataSource() {
-        return Stream.<UserDto>builder()
+    private static Stream<UserProfileDto> createUserExceptionalCasesDataSource() {
+        return Stream.<UserProfileDto>builder()
                 .add(createRequestObject().setFirstName(null))
                 .add(createRequestObject().setFirstName(""))
                 .add(createRequestObject().setLastName(null))
@@ -75,9 +75,9 @@ public class UserApiTest {
 
     @Test
     public void test_retrieveUser() {
-        UserDto userDto = createRequestObject();
+        UserProfileDto userDto = createRequestObject();
 
-        var postUser = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserDto.class);
+        var postUser = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
 
         assertSame(HttpStatus.OK, postUser.getStatusCode());
         var userId = postUser.getBody().getId();
@@ -85,7 +85,7 @@ public class UserApiTest {
                 .path("/{userId}")
                 .uriVariables(Map.of("userId", userId))
                 .toUriString();
-        var response = this.testRestTemplate.getForEntity(newPath, UserDto.class);
+        var response = this.testRestTemplate.getForEntity(newPath, UserProfileDto.class);
 
         assertSame(HttpStatus.OK, response.getStatusCode());
 
@@ -103,13 +103,13 @@ public class UserApiTest {
                 .path("/{userId}")
                 .uriVariables(Map.of("userId", "123456"))
                 .toUriString();
-        var response = this.testRestTemplate.getForEntity(newPath, UserDto.class);
+        var response = this.testRestTemplate.getForEntity(newPath, UserProfileDto.class);
 
         assertSame(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-    private static UserDto createRequestObject() {
-        return new UserDto()
+    private static UserProfileDto createRequestObject() {
+        return new UserProfileDto()
                 .setFirstName(TEST_USER_FIRST_NAME)
                 .setLastName(TEST_USER_LAST_NAME)
                 .setAlias(TEST_USER_ALIAS);

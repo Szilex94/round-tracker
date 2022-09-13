@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
  *
  * @author szilex94
  */
-public interface UserService {
+public interface UserProfileService {
 
     /**
      * Creates a new user
@@ -25,5 +25,4 @@ public interface UserService {
      */
     Mono<User> retrieveById(String userId);
 
-    Flux<User> getUsers();
 }

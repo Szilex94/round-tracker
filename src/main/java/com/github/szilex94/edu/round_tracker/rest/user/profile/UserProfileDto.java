@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @Accessors(chain = true)
-public class UserDto {
+public class UserProfileDto {
 
     private String id;
 
