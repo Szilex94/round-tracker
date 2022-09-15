@@ -48,7 +48,7 @@ public class UserApiTest {
 
         var result = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
 
-        assertSame(HttpStatus.OK, result.getStatusCode());
+        assertSame(HttpStatus.CREATED, result.getStatusCode());
         var body = result.getBody();
         assertNotNull(body);
         assertNotNull(body.getId());
@@ -79,7 +79,7 @@ public class UserApiTest {
 
         var postUser = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
 
-        assertSame(HttpStatus.OK, postUser.getStatusCode());
+        assertSame(HttpStatus.CREATED, postUser.getStatusCode());
         var userId = postUser.getBody().getId();
         var newPath = getBasePath()
                 .path("/{userId}")

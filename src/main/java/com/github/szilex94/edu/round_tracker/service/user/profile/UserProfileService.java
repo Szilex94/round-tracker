@@ -24,4 +24,10 @@ public interface UserProfileService {
      */
     Mono<UserProfile> retrieveById(String userId);
 
+    /**
+     * @param reference - reference object from which non-null fields will be applied
+     * @return the resulting object
+     */
+    Mono<UserProfile> updateUserProfile(UserProfile reference);
+
 }
