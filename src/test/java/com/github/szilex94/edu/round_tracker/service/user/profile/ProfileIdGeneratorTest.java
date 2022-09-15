@@ -33,9 +33,13 @@ public class ProfileIdGeneratorTest {
 
     private static Stream<Arguments> test_defaultImpl_validArguments() {
         return Stream.<Arguments>builder()
-                .add(Arguments.of(genericUserProfile(), "firstName.lastName.alias"))
-                .add(Arguments.of(genericUserProfile().setAlias(null), "firstName.lastName"))
-                .add(Arguments.of(genericUserProfile().setAlias(""), "firstName.lastName"))
+                .add(Arguments.of(genericUserProfile(), "firstname.lastname.alias"))
+                .add(Arguments.of(genericUserProfile().setAlias(null), "firstname.lastname"))
+                .add(Arguments.of(genericUserProfile().setAlias(""), "firstname.lastname"))
+                .add(Arguments.of(genericUserProfile().setFirstName("FIRSTNAME"), "firstname.lastname.alias"))
+                .add(Arguments.of(genericUserProfile().setLastName("LASTNAME"), "firstname.lastname.alias"))
+                .add(Arguments.of(genericUserProfile().setAlias("ALIAS"), "firstname.lastname.alias"))
+                .add(Arguments.of(genericUserProfile().setAlias("FirstName").setLastName("LastName").setAlias("AliAs"), "firstname.lastname.alias"))
                 .build();
     }
 

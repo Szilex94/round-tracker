@@ -36,14 +36,14 @@ class InterfaceSupport {
         checkArgument(!isNullOrEmpty(lastName), "Null or empty last name not allowed!");
 
         StringBuilder sb = new StringBuilder()
-                .append(firstName)
+                .append(firstName.toLowerCase())
                 .append('.')
-                .append(lastName);
+                .append(lastName.toLowerCase());
 
         //Alias is considered optional, only append it if available
         String alias = up.getAlias();
         if (!isNullOrEmpty(alias)) {
-            sb.append('.').append(alias);
+            sb.append('.').append(alias.toLowerCase());
         }
         return sb.toString();
 
