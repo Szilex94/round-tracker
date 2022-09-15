@@ -16,8 +16,6 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Deprecated
     private final UserProfileMapper mapper;
 
-    @Deprecated
-    private final ProfileIdGenerator idGenerator;
     /**
      * @deprecated - this functionality will be extracted into a DB adapter
      */
@@ -27,11 +25,9 @@ public class UserProfileServiceImpl implements UserProfileService {
     private final UserProfileUpdateMapper updateMapper;
 
     public UserProfileServiceImpl(UserProfileMapper mapper,
-                                  ProfileIdGenerator idGenerator,
                                   UserProfileRepository repository,
                                   UserProfileUpdateMapper updateMapper) {
         this.mapper = mapper;
-        this.idGenerator = idGenerator;
         this.repository = repository;
         this.updateMapper = updateMapper;
     }
@@ -42,7 +38,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         checkArgument(user != null, "Null input not allowed!");
 
         UserProfileDao dao = this.mapper.toDao(user);
-        dao.setProfileId(idGenerator.apply(user));
 
         return repository.save(dao)
                 .map(mapper::fromDao);

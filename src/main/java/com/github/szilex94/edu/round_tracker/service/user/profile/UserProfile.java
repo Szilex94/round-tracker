@@ -12,8 +12,6 @@ public class UserProfile {
      */
     private String id;
 
-    private String profileId;
-
     private String firstName;
 
     private String lastName;
