@@ -1,6 +1,5 @@
 package com.github.szilex94.edu.round_tracker.rest.user.profile;
 
-import com.github.szilex94.edu.round_tracker.mappers.UserProfileMapper;
 import com.github.szilex94.edu.round_tracker.service.user.profile.UserProfile;
 import com.github.szilex94.edu.round_tracker.service.user.profile.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("round-tracker/v1/users/profile")
 public class UserProfileController {
 
-    private final UserProfileMapper userMapper;
+    private final UserProfileDtoMapper userMapper;
 
     private final UserProfileService userService;
 
     @Autowired
-    public UserProfileController(UserProfileMapper userMapper, UserProfileService userService) {
+    public UserProfileController(UserProfileDtoMapper userMapper, UserProfileService userService) {
         this.userMapper = userMapper;
         this.userService = userService;
     }
