@@ -74,7 +74,7 @@ public class UserApiTest {
 
         assertSame(HttpStatus.CONFLICT, secondPost.getStatusCode());
 
-        assertSame(ApiErrorCode.USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT, secondPost.getBody().getApiErrorCode());
+        assertEquals(ApiErrorCode.USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode(), secondPost.getBody().getApiErrorCode());
     }
 
     @ParameterizedTest

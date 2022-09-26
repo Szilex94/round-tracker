@@ -23,7 +23,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
         var body = new GenericErrorResponse()
-                .setApiErrorCode(USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT)
+                .setApiErrorCode(USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode())
                 .setOccurred(OffsetDateTime.now())
                 .setMessage(ex.getMessage());
 

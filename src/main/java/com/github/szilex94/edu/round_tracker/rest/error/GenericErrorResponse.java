@@ -14,7 +14,7 @@ public final class GenericErrorResponse {
 
     private OffsetDateTime occurred;
 
-    private ApiErrorCode apiErrorCode;
+    private String apiErrorCode;
 
     private String message;
 
