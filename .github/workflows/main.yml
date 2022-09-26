@@ -1,3 +1,4 @@
+#Deprecated TODO revise flow for master
 name: Build And Publish Docker Image
 on:
   push:
