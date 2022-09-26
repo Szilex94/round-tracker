@@ -10,4 +10,6 @@ public interface UserProfileRepositoryAdapter {
 
     Mono<UserProfile> findById(String id);
 
+    Mono<UserProfile> createOrUpdate(UserProfile userProfile);
+
 }

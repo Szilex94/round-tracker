@@ -1,5 +1,7 @@
 package com.github.szilex94.edu.round_tracker.api.users;
 
+import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode;
+import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +30,8 @@ public class UserApiTest {
     private static final String TEST_USER_LAST_NAME = "testLastName";
 
     private static final String TEST_USER_ALIAS = "testAlias";
+
+    private static final AtomicInteger COUNT = new AtomicInteger(0);
 
     @LocalServerPort
     private int port;
@@ -52,9 +57,24 @@ public class UserApiTest {
         var body = result.getBody();
         assertNotNull(body);
         assertNotNull(body.getId());
-        assertEquals(TEST_USER_FIRST_NAME, body.getFirstName());
-        assertEquals(TEST_USER_LAST_NAME, body.getLastName());
-        assertEquals(TEST_USER_ALIAS, body.getAlias());
+        assertEquals(userDto.getFirstName(), body.getFirstName());
+        assertEquals(userDto.getLastName(), body.getLastName());
+        assertEquals(userDto.getAlias(), body.getAlias());
+    }
+
+    @Test
+    public void tes_createUser_duplicate() {
+        UserProfileDto userDto = createRequestObject();
+
+        var firstPost = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
+
+        assertSame(HttpStatus.CREATED, firstPost.getStatusCode());
+
+        var secondPost = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, GenericErrorResponse.class);
+
+        assertSame(HttpStatus.CONFLICT, secondPost.getStatusCode());
+
+        assertSame(ApiErrorCode.USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT, secondPost.getBody().getApiErrorCode());
     }
 
     @ParameterizedTest
@@ -92,9 +112,9 @@ public class UserApiTest {
         var responseBody = response.getBody();
         assertNotNull(responseBody);
 
-        assertEquals(TEST_USER_FIRST_NAME, responseBody.getFirstName());
-        assertEquals(TEST_USER_LAST_NAME, responseBody.getLastName());
-        assertEquals(TEST_USER_ALIAS, responseBody.getAlias());
+        assertEquals(userDto.getFirstName(), responseBody.getFirstName());
+        assertEquals(userDto.getLastName(), responseBody.getLastName());
+        assertEquals(userDto.getAlias(), responseBody.getAlias());
     }
 
     @Test
@@ -109,10 +129,11 @@ public class UserApiTest {
     }
 
     private static UserProfileDto createRequestObject() {
+        int current = COUNT.incrementAndGet();
         return new UserProfileDto()
-                .setFirstName(TEST_USER_FIRST_NAME)
-                .setLastName(TEST_USER_LAST_NAME)
-                .setAlias(TEST_USER_ALIAS);
+                .setFirstName(TEST_USER_FIRST_NAME + "#" + current)
+                .setLastName(TEST_USER_LAST_NAME + "#" + current)
+                .setAlias(TEST_USER_ALIAS + "#" + current);
     }
 
 }

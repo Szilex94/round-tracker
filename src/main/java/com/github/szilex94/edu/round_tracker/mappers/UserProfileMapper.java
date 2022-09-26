@@ -14,6 +14,7 @@ public interface UserProfileMapper {
 
     UserProfileDto toDto(UserProfile user);
 
+    @Deprecated
     UserProfileDao toDao(UserProfile user);
 
     @Deprecated

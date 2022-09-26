@@ -8,4 +8,6 @@ import org.mapstruct.MappingConstants;
 public interface UserProfileDaoMapper {
 
     UserProfile fromDao(UserProfileDao dao);
+
+    UserProfileDao toDao(UserProfile user);
 }
