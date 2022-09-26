@@ -7,6 +7,7 @@ import com.github.szilex94.edu.round_tracker.service.user.profile.UserProfile;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
+@Deprecated
 public interface UserProfileMapper {
 
     UserProfile fromDto(UserProfileDto dto);
@@ -15,6 +16,7 @@ public interface UserProfileMapper {
 
     UserProfileDao toDao(UserProfile user);
 
+    @Deprecated
     UserProfile fromDao(UserProfileDao dao);
 
     UserProfile fromPathDto(PatchUserProfileDto patchUserProfileDto);

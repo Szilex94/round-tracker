@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Accessors(chain = true)
 @Document(collection = "user.profile")
 @CompoundIndex(name = "unique-profile-identifier",
-        def = "{'firstName':1, 'lastName': 1, 'alias': 1}",
+        def = "{'firstName': 1, 'lastName': 1, 'alias': 1}",
         unique = true)
 public class UserProfileDao {
 
