@@ -1,9 +1,8 @@
 package com.github.szilex94.edu.round_tracker.rest.user.profile;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import javax.validation.constraints.NotEmpty;
 
 @Data
 @Accessors(chain = true)
