@@ -11,7 +11,7 @@ on:
         type: string
 
 jobs:
-  run_unit_tests:
+  run_integration_tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,8 +21,5 @@ jobs:
           java-version: ${{ inputs.java-version }}
           distribution: ${{ inputs.distribution }}
           cache: 'maven'
-      - name: Build Project
-        run: mvn clean --batch-mode --update-snapshots compile test-compile
-      - name: Run Integration Tests
-        # build was completed in the previous step as such console output should be limited to integration test summary only
-        run: mvn verify -Dskip.surefire.tests=true
+      - name: Execute Integration Tests
+        run: mvn clean --batch-mode --update-snapshots verify -Dskip.surefire.tests=true
