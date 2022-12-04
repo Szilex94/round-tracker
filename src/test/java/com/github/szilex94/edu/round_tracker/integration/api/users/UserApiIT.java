@@ -1,27 +1,17 @@
-package com.github.szilex94.edu.round_tracker.api.users;
+package com.github.szilex94.edu.round_tracker.integration.api.users;
 
+import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode;
 import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,19 +19,9 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Testcontainers
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-public class UserApiTest {
 
-    @Container
-    private static final MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:5.0.9"))
-            .withReuse(true);
+public class UserApiIT extends BaseTestContainerIT {
 
-    @DynamicPropertySource
-    static void mongoDbProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", container::getReplicaSetUrl);
-    }
 
     private static final String TEST_USER_FIRST_NAME = "testFirstName";
 
@@ -63,16 +43,6 @@ public class UserApiTest {
                 .host("localhost")
                 .port(this.port)
                 .path("round-tracker/v1/users/profile");
-    }
-
-    @BeforeAll
-    public static void beforeAll() {
-        container.start();
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        container.stop();
     }
 
     @Test
