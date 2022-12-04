@@ -18,6 +18,7 @@
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <suppress.test.logs>true</suppress.test.logs>
+        <skip.surefire.tests>false</skip.surefire.tests>
     </properties>
 
     <dependencyManagement>
@@ -155,6 +156,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
+                    <skipTests>${skip.surefire.tests}</skipTests>
                     <reportFormat>plain</reportFormat>
                     <consoleOutputReporter>
                         <disable>${suppress.test.logs}</disable>

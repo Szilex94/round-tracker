@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: Run Intgration Tests
 
 on:
   workflow_call:
@@ -23,6 +23,6 @@ jobs:
           cache: 'maven'
       - name: Build Project
         run: mvn clean --batch-mode --update-snapshots compile test-compile
-      - name: Run Unit Tests
-        # build was completed in the previous step as such console output should be limited to test summary only
-        run: mvn test
+      - name: Run Integration Tests
+        # build was completed in the previous step as such console output should be limited to integration test summary only
+        run: mvn verify -Dskip.surefire.tests=true
