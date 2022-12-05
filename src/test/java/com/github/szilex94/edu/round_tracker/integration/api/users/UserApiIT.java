@@ -1,5 +1,6 @@
-package com.github.szilex94.edu.round_tracker.api.users;
+package com.github.szilex94.edu.round_tracker.integration.api.users;
 
+import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode;
 import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
@@ -7,12 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
@@ -21,9 +19,9 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
-public class UserApiTest {
+
+public class UserApiIT extends BaseTestContainerIT {
+
 
     private static final String TEST_USER_FIRST_NAME = "testFirstName";
 

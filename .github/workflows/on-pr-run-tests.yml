@@ -11,3 +11,8 @@ jobs:
     with:
       java-version: '17'
       distribution: 'temurin'
+  run-integration-tests:
+    uses: ./.github/workflows/run-integration-tests.yml
+    with:
+      java-version: '17'
+      distribution: 'temurin'
