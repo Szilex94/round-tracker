@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.rest.tracking;
+package com.github.szilex94.edu.round_tracker.rest.tracking.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum CaliberDto {
-    NINE_MILLIMETER("9_MM"),
+    NINE_MILLIMETER("9_mm"),
     UNKNOWN("UNKNOWN");
 
     private static final Map<String, CaliberDto> SIMPLE_NAME_TO_MEMBER = Arrays.stream(CaliberDto.values())
@@ -25,7 +25,7 @@ public enum CaliberDto {
     }
 
     @JsonCreator
-    public static CaliberDto forSimpleName(String simpleName) {
-        return SIMPLE_NAME_TO_MEMBER.getOrDefault(simpleName, UNKNOWN);
+    public static CaliberDto forValue(String value) {
+        return SIMPLE_NAME_TO_MEMBER.getOrDefault(value, UNKNOWN);
     }
 }
