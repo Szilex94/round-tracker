@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.OffsetDateTime;
 
-public record UserExpenseEntryDto(String id,
+public record AmmunitionChangeDto(String id,
                                   @Positive
                                   int amount,
                                   @NotNull(message = "Null log type not allowed!")
