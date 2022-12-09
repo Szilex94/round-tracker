@@ -34,5 +34,6 @@ public class TrackingController {
 
         return trackingService.recordAmmunitionChange(change)
                 .map(mapper::toDto);
+
     }
 }
