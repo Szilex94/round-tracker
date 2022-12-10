@@ -81,7 +81,7 @@ public class TrackingIT extends BaseTestContainerIT {
     public void happyFlow_recordExpense() {
         var expense = new AmmunitionChangeDto(null,
                 10,
-                ChangeTypeDto.EXPENSE,
+                ChangeTypeDto.REPLENISHMENT,
                 AmmunitionTypeDto.NINE_MILLIMETER);
 
         var response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), expense, UserAmmunitionSummaryDto.class);
@@ -94,10 +94,14 @@ public class TrackingIT extends BaseTestContainerIT {
 
         var typeToCount = body.typeToCount();
         assertEquals(1, typeToCount.size(), "Expected summary count exceeded!");
-        assertEquals(-10, typeToCount.get(AmmunitionTypeDto.NINE_MILLIMETER));
+        assertEquals(10, typeToCount.get(AmmunitionTypeDto.NINE_MILLIMETER));
     }
 
+    //TODO add test for expense
+
     //TODO add test for multiple chained expenses
+
+    //TODO add test for chained expense and addition
 
     //TODO add test addition
 
