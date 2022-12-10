@@ -1,6 +1,7 @@
 package com.github.szilex94.edu.round_tracker.integration;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -15,11 +16,11 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class BaseTestContainerIT {
 
     @Container
-    private static final MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:5.0.9"))
-            .withReuse(true);
+    private static final MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:5.0.9"));
 
     @DynamicPropertySource
     static void mongoDbProperties(DynamicPropertyRegistry registry) {
