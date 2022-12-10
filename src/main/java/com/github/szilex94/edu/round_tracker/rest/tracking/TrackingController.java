@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("round-tracker/v1/tracking/user/{userId}")
+@RequestMapping("round-tracker/v1/user/{userId}/tracking")
 public class TrackingController {
 
 
