@@ -1,6 +1,7 @@
 package com.github.szilex94.edu.round_tracker.rest.tracking.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -23,6 +24,7 @@ public enum AmmunitionTypeDto {
         this.simpleName = simpleName;
     }
 
+    @JsonValue
     public String getSimpleName() {
         return simpleName;
     }

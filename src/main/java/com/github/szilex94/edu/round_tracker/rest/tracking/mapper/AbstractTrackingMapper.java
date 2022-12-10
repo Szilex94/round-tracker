@@ -6,10 +6,13 @@ import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionCh
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionType;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumBiMap;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+
+import java.util.Map;
 
 import static com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionTypeDto.UNKNOWN;
 
@@ -41,5 +44,14 @@ public abstract class AbstractTrackingMapper implements TrackingMapper {
 
     protected AmmunitionType externalAmmunitionTypeToInternal(AmmunitionTypeDto dto) {
         return internalToDto.inverse().get(dto);
+    }
+
+    protected Map<AmmunitionTypeDto, Integer> convertAmmunitionSummary(Map<AmmunitionType, Integer> in) {
+        ImmutableMap.Builder<AmmunitionTypeDto, Integer> builder = ImmutableMap.builder();
+
+        for (var entry : in.entrySet()) {
+            builder.put(internalToDto.get(entry.getKey()), entry.getValue());
+        }
+        return builder.build();
     }
 }
