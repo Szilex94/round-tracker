@@ -78,7 +78,7 @@ public class TrackingIT extends BaseTestContainerIT {
     }
 
     @Test
-    public void happyFlow_recordExpense() {
+    public void test_trackChange_recordReplenishment_happyFlow() {
         var expense = new AmmunitionChangeDto(null,
                 10,
                 ChangeTypeDto.REPLENISHMENT,
@@ -97,13 +97,64 @@ public class TrackingIT extends BaseTestContainerIT {
         assertEquals(10, typeToCount.get(AmmunitionTypeDto.NINE_MILLIMETER));
     }
 
-    //TODO add test for expense
+    @Test
+    public void test_trackChange_expense_happyFlow() {
+        var expense = new AmmunitionChangeDto(null,
+                10,
+                ChangeTypeDto.EXPENSE,
+                AmmunitionTypeDto.NINE_MILLIMETER);
+
+        var response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), expense, UserAmmunitionSummaryDto.class);
+
+        assertSame(HttpStatus.OK, response.getStatusCode());
+
+        var body = response.getBody();
+        assertNotNull(body);
+        assertEquals(this.profileDto.getId(), body.userId());
+
+        var typeToCount = body.typeToCount();
+        assertEquals(1, typeToCount.size(), "Expected summary count exceeded!");
+        assertEquals(-10, typeToCount.get(AmmunitionTypeDto.NINE_MILLIMETER));
+    }
+
+    @Test
+    public void test_trackChange_additionThenExpense() {
+
+        var addition = new AmmunitionChangeDto(null,
+                10,
+                ChangeTypeDto.REPLENISHMENT,
+                AmmunitionTypeDto.NINE_MILLIMETER);
+
+        var response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), addition, UserAmmunitionSummaryDto.class);
+
+        assertSame(HttpStatus.OK, response.getStatusCode());
+
+        var body = response.getBody();
+        var typeToCount = body.typeToCount();
+        assertEquals(1, typeToCount.size(), "Expected summary count exceeded!");
+        assertEquals(10, typeToCount.get(AmmunitionTypeDto.NINE_MILLIMETER));
+
+        var expense = new AmmunitionChangeDto(null,
+                10,
+                ChangeTypeDto.EXPENSE,
+                AmmunitionTypeDto.NINE_MILLIMETER);
+
+        response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), expense, UserAmmunitionSummaryDto.class);
+
+        assertSame(HttpStatus.OK, response.getStatusCode());
+
+        body = response.getBody();
+        assertNotNull(body);
+        assertEquals(this.profileDto.getId(), body.userId());
+
+        typeToCount = body.typeToCount();
+        assertEquals(1, typeToCount.size(), "Expected summary count exceeded!");
+        assertEquals(0, typeToCount.get(AmmunitionTypeDto.NINE_MILLIMETER));
+    }
 
     //TODO add test for multiple chained expenses
 
     //TODO add test for chained expense and addition
-
-    //TODO add test addition
 
     //TODO add test for correction
 }
