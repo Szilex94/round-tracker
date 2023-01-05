@@ -1,7 +1,6 @@
 package com.github.szilex94.edu.round_tracker.configuration.mongo;
 
 import org.springframework.core.convert.converter.Converter;
-import reactor.util.annotation.Nullable;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
