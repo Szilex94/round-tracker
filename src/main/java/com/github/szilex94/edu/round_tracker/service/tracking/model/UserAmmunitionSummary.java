@@ -1,8 +1,6 @@
 package com.github.szilex94.edu.round_tracker.service.tracking.model;
 
-import com.google.common.collect.ImmutableMap;
-
-import java.util.Map;
+import com.google.common.base.MoreObjects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -11,19 +9,21 @@ public final class UserAmmunitionSummary {
 
     private final String userId;
 
-    private final Map<AmmunitionType, Integer> typeToCount;
+    //TODO lastModified?
+
+    private final int grandTotal;
 
     public String getUserId() {
         return userId;
     }
 
-    public Map<AmmunitionType, Integer> getTypeToCount() {
-        return typeToCount;
+    public int getGrandTotal() {
+        return grandTotal;
     }
 
     UserAmmunitionSummary(Builder builder) {
         this.userId = builder.userId;
-        this.typeToCount = builder.typeToCount.build();
+        this.grandTotal = builder.grandTotal;
     }
 
     public static Builder builder() {
@@ -32,19 +32,19 @@ public final class UserAmmunitionSummary {
 
     @Override
     public String toString() {
-        return "UserAmmunitionSummary{" +
-                "userId='" + userId + '\'' +
-                ", typeToCount=" + typeToCount +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("userId", userId)
+                .add("totalCount", grandTotal)
+                .toString();
     }
 
     public static final class Builder {
         String userId;
 
-        ImmutableMap.Builder<AmmunitionType, Integer> typeToCount;
+        int grandTotal;
 
         private Builder() {
-            this.typeToCount = ImmutableMap.builder();
+
         }
 
         public Builder forUser(String userId) {
@@ -52,9 +52,8 @@ public final class UserAmmunitionSummary {
             return this;
         }
 
-        public Builder addSummary(AmmunitionType type, int amount) {
-            checkArgument(type != null, "Null type not allowed!");
-            this.typeToCount.put(type, amount);
+        public Builder setGrandTotal(int grandTotal) {
+            this.grandTotal = grandTotal;
             return this;
         }
 

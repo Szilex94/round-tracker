@@ -7,8 +7,6 @@ import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionCh
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.time.OffsetDateTime;
-
 @Component
 public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter {
 
@@ -24,8 +22,7 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
     @Override
     public Mono<AmmunitionChangeLog> logAmmunitionChange(AmmunitionChange change) {
         //TODO look into using the DB to generate TIME STAMP
-        var newLog = mapper.fromAmmunitionChange(change)
-                .setRecordedAt(OffsetDateTime.now());
+        var newLog = mapper.fromAmmunitionChange(change);
 
         return repository.save(newLog)
                 .map(mapper::fromDao);

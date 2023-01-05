@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import static com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionType.NINE_MILLIMETER;
-
 @Service
 @Slf4j
 public class AmmunitionExpenseTrackingServiceImpl implements AmmunitionExpenseTrackingService {
@@ -26,7 +24,7 @@ public class AmmunitionExpenseTrackingServiceImpl implements AmmunitionExpenseTr
         return repositoryAdapter.logAmmunitionChange(change)
                 .map(logEntry -> UserAmmunitionSummary.builder()
                         .forUser(logEntry.getUserId())
-                        .addSummary(NINE_MILLIMETER, logEntry.getAmount())
+                        .setGrandTotal(560)
                         .build());
 
     }

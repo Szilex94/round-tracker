@@ -22,8 +22,6 @@ public final class AmmunitionChangeLog {
 
     private final ChangeType changeType;
 
-    private final AmmunitionType ammunitionType;
-
     private final OffsetDateTime recordedAt;
 
 
@@ -32,7 +30,6 @@ public final class AmmunitionChangeLog {
         this.userId = builder.userId;
         this.amount = builder.amount;
         this.changeType = builder.changeType;
-        this.ammunitionType = builder.ammunitionType;
         this.recordedAt = builder.recordedAt;
     }
 
@@ -49,8 +46,6 @@ public final class AmmunitionChangeLog {
         int amount;
 
         ChangeType changeType;
-
-        AmmunitionType ammunitionType;
 
         OffsetDateTime recordedAt;
 
@@ -74,11 +69,6 @@ public final class AmmunitionChangeLog {
             return this;
         }
 
-        public Builder setAmmunitionType(AmmunitionType ammunitionType) {
-            this.ammunitionType = ammunitionType;
-            return this;
-        }
-
         public Builder setRecordedAt(OffsetDateTime recordedAt) {
             this.recordedAt = recordedAt;
             return this;
@@ -88,7 +78,6 @@ public final class AmmunitionChangeLog {
             checkArgument(!isNullOrEmpty(logId), "LogId not set!");
             checkArgument(!isNullOrEmpty(userId), "UserId not set!");
             checkArgument(changeType != null, "ChangeType not set!");
-            checkArgument(ammunitionType != null, "AmmunitionType not set!");
             checkArgument(recordedAt != null, "RecordedAt time stamp not set!");
             return new AmmunitionChangeLog(this);
         }
