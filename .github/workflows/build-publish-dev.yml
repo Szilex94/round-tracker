@@ -24,6 +24,15 @@ jobs:
       java-version: '17'
       distribution: 'temurin'
 
+  qodana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2022.3.2
+
   create-and-publish-docker-image:
     runs-on: ubuntu-latest
     needs: [unit-tests, integration-tests]
