@@ -9,7 +9,6 @@ on:
 
 jobs:
   qodana-code-analysis:
-    needs: [ unit-tests, integration-tests ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
