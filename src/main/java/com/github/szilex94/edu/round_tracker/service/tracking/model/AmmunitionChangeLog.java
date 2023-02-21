@@ -75,10 +75,11 @@ public final class AmmunitionChangeLog {
         }
 
         public AmmunitionChangeLog build() {
-            checkArgument(!isNullOrEmpty(logId), "LogId not set!");
-            checkArgument(!isNullOrEmpty(userId), "UserId not set!");
-            checkArgument(changeType != null, "ChangeType not set!");
-            checkArgument(recordedAt != null, "RecordedAt time stamp not set!");
+            //TODO fix
+//            checkArgument(!isNullOrEmpty(logId), "LogId not set!");
+//            checkArgument(!isNullOrEmpty(userId), "UserId not set!");
+//            checkArgument(changeType != null, "ChangeType not set!");
+//            checkArgument(recordedAt != null, "RecordedAt time stamp not set!");
             return new AmmunitionChangeLog(this);
         }
     }

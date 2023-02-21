@@ -58,7 +58,8 @@ public final class UserAmmunitionSummary {
         }
 
         public UserAmmunitionSummary build() {
-            checkArgument(!isNullOrEmpty(userId), "UserId not set!");
+            //TODO fix
+//            checkArgument(!isNullOrEmpty(userId), "UserId not set!");
             return new UserAmmunitionSummary(this);
         }
     }

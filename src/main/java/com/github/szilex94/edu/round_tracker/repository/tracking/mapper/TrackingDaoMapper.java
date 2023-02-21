@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.repository.tracking;
+package com.github.szilex94.edu.round_tracker.repository.tracking.mapper;
 
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChange;
