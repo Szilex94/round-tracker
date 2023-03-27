@@ -2,7 +2,6 @@ package com.github.szilex94.edu.round_tracker.rest.support;
 
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnCreate;
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnUpdate;
-import jakarta.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -18,7 +17,6 @@ import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
  */
 @RestController
 @RequestMapping("round-tracker/v1/support")
-@Validated
 public class SupportController {
 
 
@@ -28,14 +26,14 @@ public class SupportController {
     }
 
     @PostMapping(path = "caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @Validated(OnCreate.class)
-    public Mono<CaliberTypeDefinitionDto> addCaliberDefinition(@Valid @RequestBody CaliberTypeDefinitionDto dto) {
+
+    public Mono<CaliberTypeDefinitionDto> addCaliberDefinition(@Validated(OnCreate.class) @RequestBody CaliberTypeDefinitionDto dto) {
         throw new UnsupportedOperationException("TBD");
     }
 
     @PatchMapping(path = "caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    @Validated(OnUpdate.class)
-    public Mono<CaliberTypeDefinitionDto> patchCaliberDefinition(@Valid @RequestBody CaliberTypeDefinitionDto dto) {
+
+    public Mono<CaliberTypeDefinitionDto> patchCaliberDefinition(@Validated(OnUpdate.class) @RequestBody CaliberTypeDefinitionDto dto) {
         throw new UnsupportedOperationException("TBD");
     }
 
