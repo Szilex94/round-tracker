@@ -20,7 +20,7 @@ import org.testcontainers.utility.DockerImageName;
 public abstract class BaseTestContainerIT {
 
     @Container
-    private static final MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:5.0.9"));
+    private static final MongoDBContainer container = new MongoDBContainer(DockerImageName.parse("mongo:6.0.5"));
 
     @DynamicPropertySource
     static void mongoDbProperties(DynamicPropertyRegistry registry) {
