@@ -2,6 +2,7 @@ package com.github.szilex94.edu.round_tracker.rest.support;
 
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnCreate;
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnUpdate;
+import com.github.szilex94.edu.round_tracker.service.support.caliber.CaliberDefinitionService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -19,20 +20,28 @@ import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
 @RequestMapping("round-tracker/v1/support")
 public class SupportController {
 
+    private final CaliberTypeMapper mapper;
 
-    @GetMapping(path = "caliberDefinition", produces = APPLICATION_NDJSON_VALUE)
+    private final CaliberDefinitionService caliberService;
+
+    public SupportController(CaliberTypeMapper mapper, CaliberDefinitionService caliberService) {
+        this.mapper = mapper;
+        this.caliberService = caliberService;
+    }
+
+    @GetMapping(path = "/caliberDefinition", produces = APPLICATION_NDJSON_VALUE)
     public Flux<CaliberTypeDefinitionDto> getSupportedCalibers() {
         throw new UnsupportedOperationException("TBD");
     }
 
-    @PostMapping(path = "caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-
+    @PostMapping(path = "/caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public Mono<CaliberTypeDefinitionDto> addCaliberDefinition(@Validated(OnCreate.class) @RequestBody CaliberTypeDefinitionDto dto) {
-        throw new UnsupportedOperationException("TBD");
+        var def = mapper.fromDto(dto);
+        return caliberService.createNewCaliberDefinition(def)
+                .map(mapper::toDto);
     }
 
-    @PatchMapping(path = "caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-
+    @PatchMapping(path = "/caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public Mono<CaliberTypeDefinitionDto> patchCaliberDefinition(@Validated(OnUpdate.class) @RequestBody CaliberTypeDefinitionDto dto) {
         throw new UnsupportedOperationException("TBD");
     }
