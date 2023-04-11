@@ -3,6 +3,7 @@ package com.github.szilex94.edu.round_tracker.rest.support;
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnCreate;
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnUpdate;
 import com.github.szilex94.edu.round_tracker.service.support.caliber.CaliberDefinitionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -31,10 +32,12 @@ public class SupportController {
 
     @GetMapping(path = "/caliberDefinition", produces = APPLICATION_NDJSON_VALUE)
     public Flux<CaliberTypeDefinitionDto> getSupportedCalibers() {
-        throw new UnsupportedOperationException("TBD");
+        return caliberService.retrieveCaliberDefinitions()
+                .map(mapper::toDto);
     }
 
     @PostMapping(path = "/caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<CaliberTypeDefinitionDto> addCaliberDefinition(@Validated(OnCreate.class) @RequestBody CaliberTypeDefinitionDto dto) {
         var def = mapper.fromDto(dto);
         return caliberService.createNewCaliberDefinition(def)
