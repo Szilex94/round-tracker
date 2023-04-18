@@ -56,9 +56,7 @@ public class CaliberDefinitionServiceTest {
 
     @Test
     public void test_createNew_nullInput() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.subject.createNewCaliberDefinition(null);
-        });
+        assertThrows(IllegalArgumentException.class, () -> this.subject.createNewCaliberDefinition(null));
     }
 
     @Test
