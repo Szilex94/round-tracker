@@ -15,6 +15,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,8 +87,6 @@ public class SupportIT extends BaseTestContainerIT {
     public void test_retrieve() {
 
         var definition = this.utilities.createNewCaliberTypeDefinition();
-        this.utilities.createNewCaliberTypeDefinition();
-        this.utilities.createNewCaliberTypeDefinition();
 
 
         var response = this.webTestClient.get()
@@ -108,5 +108,92 @@ public class SupportIT extends BaseTestContainerIT {
 
     }
 
-    //TODO tests for get & patch
+    @Test
+    public void test_retrieveMultiple() {
+        this.utilities.createNewCaliberTypeDefinition();
+        Set<CaliberTypeDefinitionDto> createdDefinitions = new HashSet<>();
+        createdDefinitions.add(this.utilities.createNewCaliberTypeDefinition());
+        createdDefinitions.add(this.utilities.createNewCaliberTypeDefinition());
+        createdDefinitions.add(this.utilities.createNewCaliberTypeDefinition());
+
+
+        var response = this.webTestClient.get()
+                .uri(Endpoints.SUPPORT_CALIBER_DEF)
+                .accept(MediaType.APPLICATION_NDJSON)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(CaliberTypeDefinitionDto.class);
+
+
+        Flux<CaliberTypeDefinitionDto> flux = response.getResponseBody()
+                .filter(createdDefinitions::contains);
+
+        StepVerifier.create(flux)
+                .expectNextCount(3)
+                .expectComplete()
+                .verify();
+
+
+    }
+
+    @Test
+    public void test_patch_nonExisting() {
+
+        var nonExisting = new CaliberTypeDefinitionDto("nonExistent",
+                "nonExistent",
+                "This should not exist!");
+
+        this.webTestClient.patch()
+                .uri(Endpoints.SUPPORT_CALIBER_DEF)
+                .bodyValue(nonExisting)
+                .exchange()
+                .expectStatus().isNotFound();
+
+        var existingDefinitions = this.webTestClient.get()
+                .uri(Endpoints.SUPPORT_CALIBER_DEF)
+                .accept(MediaType.APPLICATION_NDJSON)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(CaliberTypeDefinitionDto.class);
+
+        Flux<CaliberTypeDefinitionDto> flux = existingDefinitions.getResponseBody()
+                .filter(nonExisting::equals);
+
+        StepVerifier.create(flux)
+                .expectNextCount(0)
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    public void test_patch_validUpdate() {
+
+        var createdDef = this.utilities.createNewCaliberTypeDefinition();
+
+        var modified = new CaliberTypeDefinitionDto(createdDef.code(), "updatedDisplayName", "Updated Description!");
+
+        this.webTestClient.patch()
+                .uri(Endpoints.SUPPORT_CALIBER_DEF)
+                .bodyValue(modified)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(CaliberTypeDefinitionDto.class)
+                .isEqualTo(modified);
+
+        var existingDefinitions = this.webTestClient.get()
+                .uri(Endpoints.SUPPORT_CALIBER_DEF)
+                .accept(MediaType.APPLICATION_NDJSON)
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(CaliberTypeDefinitionDto.class);
+
+
+        Flux<CaliberTypeDefinitionDto> flux = existingDefinitions.getResponseBody()
+                .filter(current -> createdDef.code().equals(current.code()));
+
+        StepVerifier.create(flux)
+                .expectNext(modified)
+                .expectComplete()
+                .verify();
+    }
 }
