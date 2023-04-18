@@ -1,5 +1,9 @@
 package com.github.szilex94.edu.round_tracker.service.support.caliber;
 
+import com.google.common.base.MoreObjects;
+
+import java.util.Objects;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -38,6 +42,35 @@ public final class CaliberTypeDefinition {
                 .setCode(this.code)
                 .setDisplayName(this.displayName)
                 .setDescription(this.description);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CaliberTypeDefinition that = (CaliberTypeDefinition) o;
+
+        if (!code.equals(that.code)) return false;
+        if (!Objects.equals(displayName, that.displayName)) return false;
+        return Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = code.hashCode();
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("code", code)
+                .add("displayName", displayName)
+                .add("description", description)
+                .toString();
     }
 
     public static class Builder {

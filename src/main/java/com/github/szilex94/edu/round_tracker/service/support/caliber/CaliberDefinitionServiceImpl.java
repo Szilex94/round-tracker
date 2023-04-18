@@ -48,7 +48,7 @@ public class CaliberDefinitionServiceImpl implements CaliberDefinitionService {
         var code = input.getCode();
         var result = withExisting.apply(input);
         if (!code.equals(result.getCode())) {
-            log.error("An illegal 'code' update was attempted for {}!", code);
+            log.error("An illegal 'code' update was attempted for code '{}'!", code);
             throw new IllegalStateException("Illegal definition code update for " + code);
         }
 
@@ -57,7 +57,7 @@ public class CaliberDefinitionServiceImpl implements CaliberDefinitionService {
 
     private void handleDuplicateCaliberType(CaliberTypeDefinition def) {
         var code = def.getCode();
-        log.warn("Attempted insertion of duplicate caliber code {}!", code);
+        log.warn("Attempted insertion of duplicate caliber code '{}'!", code);
         throw new DuplicateCaliberCodeException("Duplicate caliber code detected!", code);
     }
 }
