@@ -15,7 +15,7 @@ public interface CaliberDefinitionService {
     /**
      * Saves the supplied caliber in the DB
      *
-     * @param caliberDef
+     * @param caliberDef the desired definition
      * @return a definition representation which was saved in the db
      */
     Mono<CaliberTypeDefinition> createNewCaliberDefinition(CaliberTypeDefinition caliberDef);
