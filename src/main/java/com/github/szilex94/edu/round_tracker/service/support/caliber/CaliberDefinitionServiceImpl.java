@@ -6,7 +6,10 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.function.UnaryOperator;
+
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Service
 @Slf4j
@@ -29,6 +32,27 @@ public class CaliberDefinitionServiceImpl implements CaliberDefinitionService {
         return repositoryAdapter.findByCode(caliberDef.getCode())
                 .doOnNext(this::handleDuplicateCaliberType)
                 .switchIfEmpty(repositoryAdapter.save(caliberDef));
+    }
+
+    @Override
+    public Mono<CaliberTypeDefinition> updateExisting(String code, UnaryOperator<CaliberTypeDefinition> withExisting) {
+        checkArgument(!isNullOrEmpty(code), "Null or empty code not allowed!");
+        checkArgument(withExisting != null, "Null updater function not allowed!");
+        return repositoryAdapter.findByCode(code)
+                .map(existing -> applyUpdate(existing, withExisting))
+                .flatMap(repositoryAdapter::save);
+    }
+
+    private CaliberTypeDefinition applyUpdate(CaliberTypeDefinition input,
+                                              UnaryOperator<CaliberTypeDefinition> withExisting) {
+        var code = input.getCode();
+        var result = withExisting.apply(input);
+        if (!code.equals(result.getCode())) {
+            log.error("An illegal 'code' update was attempted for {}!", code);
+            throw new IllegalStateException("Illegal definition code update for " + code);
+        }
+
+        return result;
     }
 
     private void handleDuplicateCaliberType(CaliberTypeDefinition def) {

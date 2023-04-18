@@ -33,6 +33,13 @@ public final class CaliberTypeDefinition {
         return description;
     }
 
+    public Builder toBuilder() {
+        return builder()
+                .setCode(this.code)
+                .setDisplayName(this.displayName)
+                .setDescription(this.description);
+    }
+
     public static class Builder {
         String code;
 
