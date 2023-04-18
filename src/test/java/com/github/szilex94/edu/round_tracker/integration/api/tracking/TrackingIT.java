@@ -2,7 +2,7 @@ package com.github.szilex94.edu.round_tracker.integration.api.tracking;
 
 import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.integration.Endpoints;
-import com.github.szilex94.edu.round_tracker.integration.TestRestUtilities;
+import com.github.szilex94.edu.round_tracker.integration.RestTestUtilities;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionChangeDto;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.UserAmmunitionSummaryDto;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
@@ -21,18 +22,23 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TrackingIT extends BaseTestContainerIT {
 
     @LocalServerPort
+    @Deprecated
     private int port;
 
     @Autowired
+    @Deprecated
     private TestRestTemplate testRestTemplate;
 
-    private TestRestUtilities utilities;
+    @Autowired
+    private WebTestClient webTestClient;
+
+    private RestTestUtilities utilities;
 
     private UserProfileDto profileDto;
 
     @BeforeEach
     public void beforeEach() {
-        this.utilities = new TestRestUtilities(this.port, this.testRestTemplate);
+        this.utilities = new RestTestUtilities(webTestClient);
         this.profileDto = utilities.createNewUser();
     }
 
