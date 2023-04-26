@@ -14,6 +14,11 @@ import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
+import static com.github.szilex94.edu.round_tracker.repository.support.caliber.mongo.CaliberTypeDefinitionDao.FIELD_CALIBER_CODE;
+import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.ChangeEntry.*;
+import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.FIELD_ENTRIES;
+import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.FIELD_USER_ID;
+
 @AllArgsConstructor
 public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
 
@@ -31,18 +36,19 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
         TransactionalOperator transactionalOperator = TransactionalOperator.create(reactiveTransactionManager);
 
         Query ammunitionCodeQuery = Query.query(
-                Criteria.where(CaliberTypeDefinitionDao.FIELD_CALIBER_CODE).is(ammunitionCode));
+                Criteria.where(FIELD_CALIBER_CODE).is(ammunitionCode));
 
         Query ammunitionSummaryQuery = Query.query(
-                Criteria.where(AmmunitionSummaryDao.FIELD_USER_ID).is(userId));
+                Criteria.where(FIELD_USER_ID).is(userId));
 
         UpdateDefinition summaryUpsert = new Update()
-                .setOnInsert(AmmunitionSummaryDao.FIELD_USER_ID, userId)
-                .inc(AmmunitionSummaryDao.FIELD_CODE_TO_TOTAL + '.' + ammunitionCode, change.getAmount());
+                .setOnInsert(FIELD_USER_ID, userId)
+                .currentDate(FIELD_ENTRIES + "." + ammunitionCode + "." + FIELD_LAST_RECORDED_CHANGE)
+                .inc(FIELD_ENTRIES + "." + ammunitionCode + "." + FIELD_GRAND_TOTAL, change.getAmount());
 
         return reactiveMongoTemplate.findOne(ammunitionCodeQuery, CaliberTypeDefinitionDao.class)
                 .switchIfEmpty(Mono.error(UnknownAmmunitionCodeException::new)) // If the code is not defined raise an exception
-                .then(reactiveMongoTemplate.save(change))
+                .then(reactiveMongoTemplate.insert(change))
                 .then(reactiveMongoTemplate.upsert(ammunitionSummaryQuery, summaryUpsert, AmmunitionSummaryDao.class))
                 .as(transactionalOperator::transactional)
                 .then(reactiveMongoTemplate.findOne(ammunitionSummaryQuery, AmmunitionSummaryDao.class));

@@ -24,7 +24,7 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
         var newEntry = mapper.fromAmmunitionChange(change);
 
         return repository.recordAmmunitionChange(newEntry)
-                .then(Mono.just(AmmunitionChangeSummary.builder().build()));
+                .map(mapper::toAmmunitionChange);
 
     }
 }
