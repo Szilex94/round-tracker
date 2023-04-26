@@ -10,6 +10,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "support.caliber")
 public class CaliberTypeDefinitionDao {
 
+    /**
+     * FIELD_CALIBER_CODE - represents the {@link #code} field which can be used when building DSL queries
+     */
+    public static final String FIELD_CALIBER_CODE = "code";
+
     @Id
     private String code;
 

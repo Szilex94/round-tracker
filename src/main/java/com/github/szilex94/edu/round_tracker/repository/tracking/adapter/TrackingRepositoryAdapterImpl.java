@@ -3,7 +3,7 @@ package com.github.szilex94.edu.round_tracker.repository.tracking.adapter;
 import com.github.szilex94.edu.round_tracker.repository.tracking.mapper.TrackingDaoMapper;
 import com.github.szilex94.edu.round_tracker.repository.tracking.repository.TrackingRepository;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChange;
-import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChangeLog;
+import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChangeSummary;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -20,12 +20,11 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
     }
 
     @Override
-    public Mono<AmmunitionChangeLog> recordAmmunitionChange(AmmunitionChange change) {
-        //TODO look into using the DB to generate TIME STAMP
-        var newLog = mapper.fromAmmunitionChange(change);
+    public Mono<AmmunitionChangeSummary> recordAmmunitionChange(AmmunitionChange change) {
+        var newEntry = mapper.fromAmmunitionChange(change);
 
-        return repository.recordAmmunitionChange(newLog)
-                .then(Mono.just(AmmunitionChangeLog.builder().build()));
+        return repository.recordAmmunitionChange(newEntry)
+                .then(Mono.just(AmmunitionChangeSummary.builder().build()));
 
     }
 }

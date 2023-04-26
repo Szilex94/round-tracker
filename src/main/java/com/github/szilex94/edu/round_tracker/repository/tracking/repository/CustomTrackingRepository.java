@@ -1,6 +1,7 @@
 package com.github.szilex94.edu.round_tracker.repository.tracking.repository;
 
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao;
+import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao;
 import reactor.core.publisher.Mono;
 
 /**
@@ -10,5 +11,5 @@ import reactor.core.publisher.Mono;
  */
 public interface CustomTrackingRepository {
 
-    Mono<Void> recordAmmunitionChange(AmmunitionChangeLogDao change);
+    Mono<AmmunitionSummaryDao> recordAmmunitionChange(AmmunitionChangeLogDao change);
 }

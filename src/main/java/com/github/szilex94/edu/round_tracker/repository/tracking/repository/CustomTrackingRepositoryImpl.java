@@ -1,16 +1,18 @@
 package com.github.szilex94.edu.round_tracker.repository.tracking.repository;
 
+import com.github.szilex94.edu.round_tracker.repository.support.caliber.mongo.CaliberTypeDefinitionDao;
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao;
+import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao;
+import com.github.szilex94.edu.round_tracker.service.tracking.model.UnknownAmmunitionCodeException;
 import lombok.AllArgsConstructor;
-import org.bson.Document;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.*;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.query.UpdateDefinition;
 import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 @AllArgsConstructor
 public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
@@ -21,50 +23,29 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
 
 
     @Override
-    public Mono<Void> recordAmmunitionChange(AmmunitionChangeLogDao change) {
+    public Mono<AmmunitionSummaryDao> recordAmmunitionChange(AmmunitionChangeLogDao change) {
+
+        final var userId = change.getUserId();
+        final var ammunitionCode = change.getAmmunitionCode();
 
         TransactionalOperator transactionalOperator = TransactionalOperator.create(reactiveTransactionManager);
 
-//TODO figure out bucketing strategy
-        var lowerBound = OffsetDateTime.of(2023, 4, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-        var upperBound = OffsetDateTime.of(2023, 6, 30, 0, 0, 0, 0, ZoneOffset.UTC);
-        var present = OffsetDateTime.now().plusMonths(1);
-        CriteriaDefinition cd = Criteria.where("userId").is(change.getUserId())
-                .and("startDate").lt(present)
-                .and("endDate").gt(present);
+        Query ammunitionCodeQuery = Query.query(
+                Criteria.where(CaliberTypeDefinitionDao.FIELD_CALIBER_CODE).is(ammunitionCode));
 
-        Query q = Query.query(cd);
+        Query ammunitionSummaryQuery = Query.query(
+                Criteria.where(AmmunitionSummaryDao.FIELD_USER_ID).is(userId));
 
-        var bson = new Document();
-        bson.put("changeType", change.getChangeType().name());
-        bson.put("date", present);
-        bson.put("amount", change.getAmount());
-        bson.put("details", null);
+        UpdateDefinition summaryUpsert = new Update()
+                .setOnInsert(AmmunitionSummaryDao.FIELD_USER_ID, userId)
+                .inc(AmmunitionSummaryDao.FIELD_CODE_TO_TOTAL + '.' + ammunitionCode, change.getAmount());
 
-        UpdateDefinition ud = new Update()
-                .setOnInsert("userId", change.getUserId())
-                .setOnInsert("startDate", lowerBound)
-                .setOnInsert("endDate", upperBound)
-                .push("entries", bson)
-                .inc("total", change.getAmount());
-
-
-        ud.inc("entryCount");
-
-        CriteriaDefinition summaryCD = Criteria.where("userId").is(change.getUserId());
-
-        Query summaryQuery = Query.query(summaryCD);
-
-        UpdateDefinition summaryUD = new Update()
-                .setOnInsert("userId", change.getUserId())
-                .inc("nineMillimeter", change.getAmount());
-
-        return reactiveMongoTemplate.upsert(q, ud, AmmunitionChangeBucketEntry.class)
-                .then(reactiveMongoTemplate.upsert(summaryQuery, summaryUD, "user.tracking.summary"))
+        return reactiveMongoTemplate.findOne(ammunitionCodeQuery, CaliberTypeDefinitionDao.class)
+                .switchIfEmpty(Mono.error(UnknownAmmunitionCodeException::new)) // If the code is not defined raise an exception
+                .then(reactiveMongoTemplate.save(change))
+                .then(reactiveMongoTemplate.upsert(ammunitionSummaryQuery, summaryUpsert, AmmunitionSummaryDao.class))
                 .as(transactionalOperator::transactional)
-                .then(reactiveMongoTemplate.findOne(summaryQuery, SummaryDao.class))
-                .log()
-                .then();
-
+                .then(reactiveMongoTemplate.findOne(ammunitionSummaryQuery, AmmunitionSummaryDao.class));
     }
+
 }

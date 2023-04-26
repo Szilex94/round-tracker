@@ -13,6 +13,7 @@ import org.mapstruct.MappingConstants;
 public interface TrackingMapper {
 
     @Mapping(target = "changeType", constant = "REGULAR")
+    @Mapping(target = "recordedAt", expression = "java( java.time.OffsetDateTime.now() )")
     AmmunitionChange fromDto(String userId, AmmunitionChangeDto dto);
 
     UserAmmunitionSummaryDto toDto(UserAmmunitionSummary summary);

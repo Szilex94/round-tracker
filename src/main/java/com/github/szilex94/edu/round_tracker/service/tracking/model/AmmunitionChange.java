@@ -2,6 +2,8 @@ package com.github.szilex94.edu.round_tracker.service.tracking.model;
 
 import com.google.common.base.MoreObjects;
 
+import java.time.OffsetDateTime;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -12,7 +14,11 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public final class AmmunitionChange {
 
+    private final String id;
+
     private final String userId;
+
+    private final OffsetDateTime recordedAt;
 
     private final String ammunitionCode;
 
@@ -21,7 +27,9 @@ public final class AmmunitionChange {
     private final ChangeType changeType;
 
     AmmunitionChange(Builder builder) {
+        this.id = builder.id;
         this.userId = builder.userId;
+        this.recordedAt = builder.recordedAt;
         this.ammunitionCode = builder.ammunitionCode;
         this.amount = builder.amount;
         this.changeType = builder.changeType;
@@ -31,8 +39,16 @@ public final class AmmunitionChange {
         return new Builder();
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getUserId() {
         return userId;
+    }
+
+    public OffsetDateTime getRecordedAt() {
+        return recordedAt;
     }
 
     public int getAmount() {
@@ -58,7 +74,12 @@ public final class AmmunitionChange {
     }
 
     public static final class Builder {
+
+        String id;
+
         String userId;
+
+        OffsetDateTime recordedAt;
 
         String ammunitionCode;
 
@@ -70,9 +91,23 @@ public final class AmmunitionChange {
             //Restrict visibility
         }
 
+        public Builder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
         public Builder setUserId(String userId) {
             this.userId = userId;
             return this;
+        }
+
+        public Builder setRecordedAt(OffsetDateTime recordedAt) {
+            this.recordedAt = recordedAt;
+            return this;
+        }
+
+        public Builder withPresentAsRecordedAt() {
+            return this.setRecordedAt(OffsetDateTime.now());
         }
 
         public Builder setAmmunitionCode(String ammunitionCode) {
@@ -92,6 +127,7 @@ public final class AmmunitionChange {
 
         public AmmunitionChange build() {
             checkArgument(!isNullOrEmpty(userId), "User Id not set!");
+            checkArgument(recordedAt != null, "Time of recording must not be null!");
             checkArgument(!isNullOrEmpty(ammunitionCode), "Ammunition code not set!");
             checkArgument(amount > 0, "Amount must be greater than 0!");
             checkArgument(changeType != null, "Change Type not set!");
