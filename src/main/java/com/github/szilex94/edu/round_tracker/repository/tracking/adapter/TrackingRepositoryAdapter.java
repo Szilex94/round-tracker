@@ -17,5 +17,5 @@ public interface TrackingRepositoryAdapter {
      * @param change the change which should be logged
      * @return the log entry created for the supplied change
      */
-    Mono<AmmunitionChangeLog> logAmmunitionChange(AmmunitionChange change);
+    Mono<AmmunitionChangeLog> recordAmmunitionChange(AmmunitionChange change);
 }

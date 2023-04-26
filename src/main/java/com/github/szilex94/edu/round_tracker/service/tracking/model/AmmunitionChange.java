@@ -14,12 +14,15 @@ public final class AmmunitionChange {
 
     private final String userId;
 
+    private final String ammunitionCode;
+
     private final int amount;
 
     private final ChangeType changeType;
 
     AmmunitionChange(Builder builder) {
         this.userId = builder.userId;
+        this.ammunitionCode = builder.ammunitionCode;
         this.amount = builder.amount;
         this.changeType = builder.changeType;
     }
@@ -40,10 +43,15 @@ public final class AmmunitionChange {
         return changeType;
     }
 
+    public String getAmmunitionCode() {
+        return ammunitionCode;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("userId", userId)
+                .add("ammunitionCode", ammunitionCode)
                 .add("amount", amount)
                 .add("changeType", changeType)
                 .toString();
@@ -51,6 +59,8 @@ public final class AmmunitionChange {
 
     public static final class Builder {
         String userId;
+
+        String ammunitionCode;
 
         int amount;
 
@@ -62,6 +72,11 @@ public final class AmmunitionChange {
 
         public Builder setUserId(String userId) {
             this.userId = userId;
+            return this;
+        }
+
+        public Builder setAmmunitionCode(String ammunitionCode) {
+            this.ammunitionCode = ammunitionCode;
             return this;
         }
 
@@ -77,6 +92,7 @@ public final class AmmunitionChange {
 
         public AmmunitionChange build() {
             checkArgument(!isNullOrEmpty(userId), "User Id not set!");
+            checkArgument(!isNullOrEmpty(ammunitionCode), "Ammunition code not set!");
             checkArgument(amount > 0, "Amount must be greater than 0!");
             checkArgument(changeType != null, "Change Type not set!");
             return new AmmunitionChange(this);

@@ -13,6 +13,12 @@ public interface CaliberDefinitionService {
     Flux<CaliberTypeDefinition> retrieveCaliberDefinitions();
 
     /**
+     * @param code not {@code null} or empty
+     * @return the caliber definition (if it exists) associated with the supplied code
+     */
+    Mono<CaliberTypeDefinition> findByCode(String code);
+
+    /**
      * Saves the supplied caliber in the DB
      *
      * @param caliberDef the desired definition

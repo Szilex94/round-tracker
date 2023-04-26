@@ -2,6 +2,7 @@ package com.github.szilex94.edu.round_tracker.rest.error;
 
 import com.github.szilex94.edu.round_tracker.repository.exception.DuplicateUserProfileException;
 import com.github.szilex94.edu.round_tracker.service.support.caliber.DuplicateCaliberCodeException;
+import com.github.szilex94.edu.round_tracker.service.tracking.model.UnknownAmmunitionCodeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 body,
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,
+                request);
+    }
+
+    @ExceptionHandler(value = UnknownAmmunitionCodeException.class)
+    protected ResponseEntity<Object> handleUnknownAmmunitionCode(
+            RuntimeException ex,
+            WebRequest request) {
+
+
+        var body = new GenericErrorResponse()
+                .setApiErrorCode(UNKNOWN_AMMUNITION_CODE.getCode())
+                .setOccurred(OffsetDateTime.now())
+                .setMessage(ex.getMessage());
+
+        return handleExceptionInternal(ex,
+                body,
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
                 request);
     }
 

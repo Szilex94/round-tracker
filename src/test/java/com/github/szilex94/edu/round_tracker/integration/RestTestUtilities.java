@@ -37,7 +37,7 @@ public class RestTestUtilities {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(desired)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isEqualTo(HttpStatus.CREATED)
                 .expectBody(UserProfileDto.class)
                 .returnResult()
                 .getResponseBody();

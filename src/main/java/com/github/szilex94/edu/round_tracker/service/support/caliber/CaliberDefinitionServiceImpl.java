@@ -27,6 +27,12 @@ public class CaliberDefinitionServiceImpl implements CaliberDefinitionService {
     }
 
     @Override
+    public Mono<CaliberTypeDefinition> findByCode(String code) {
+        checkArgument(!isNullOrEmpty(code), "Null or empty code not allowed!");
+        return repositoryAdapter.findByCode(code);
+    }
+
+    @Override
     public Mono<CaliberTypeDefinition> createNewCaliberDefinition(CaliberTypeDefinition caliberDef) {
         checkArgument(caliberDef != null, "Null input not allowed!");
         return repositoryAdapter.findByCode(caliberDef.getCode())

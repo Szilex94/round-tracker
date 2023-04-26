@@ -20,7 +20,7 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
     }
 
     @Override
-    public Mono<AmmunitionChangeLog> logAmmunitionChange(AmmunitionChange change) {
+    public Mono<AmmunitionChangeLog> recordAmmunitionChange(AmmunitionChange change) {
         //TODO look into using the DB to generate TIME STAMP
         var newLog = mapper.fromAmmunitionChange(change);
 
