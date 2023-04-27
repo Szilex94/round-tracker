@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 
 @Document("user.tracking.summary")

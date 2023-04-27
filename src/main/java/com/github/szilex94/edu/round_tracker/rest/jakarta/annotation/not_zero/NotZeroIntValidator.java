@@ -7,6 +7,6 @@ public class NotZeroIntValidator implements ConstraintValidator<NotZero, Integer
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
-        return value.intValue() != 0;
+        return value != 0;
     }
 }
