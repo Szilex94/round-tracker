@@ -129,7 +129,7 @@ public final class AmmunitionChange {
             checkArgument(!isNullOrEmpty(userId), "User Id not set!");
             checkArgument(recordedAt != null, "Time of recording must not be null!");
             checkArgument(!isNullOrEmpty(ammunitionCode), "Ammunition code not set!");
-            checkArgument(amount > 0, "Amount must be greater than 0!");
+            checkArgument(amount != 0, "Amount must be equal to zero!");
             checkArgument(changeType != null, "Change Type not set!");
             return new AmmunitionChange(this);
         }
