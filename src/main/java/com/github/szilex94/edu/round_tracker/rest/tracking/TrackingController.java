@@ -2,7 +2,7 @@ package com.github.szilex94.edu.round_tracker.rest.tracking;
 
 import com.github.szilex94.edu.round_tracker.rest.tracking.mapper.TrackingMapper;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionChangeDto;
-import com.github.szilex94.edu.round_tracker.rest.tracking.model.UserAmmunitionSummaryDto;
+import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionSummaryDto;
 import com.github.szilex94.edu.round_tracker.service.tracking.AmmunitionExpenseTrackingService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +27,8 @@ public class TrackingController {
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE,
             produces = APPLICATION_JSON_VALUE)
-    public Mono<UserAmmunitionSummaryDto> trackChange(@PathVariable String userId,
-                                                      @Valid @RequestBody AmmunitionChangeDto expenseEntryDto) {
+    public Mono<AmmunitionSummaryDto> trackChange(@PathVariable String userId,
+                                                  @Valid @RequestBody AmmunitionChangeDto expenseEntryDto) {
         
         var change = mapper.fromDto(userId, expenseEntryDto);
 

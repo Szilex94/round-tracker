@@ -3,7 +3,7 @@ package com.github.szilex94.edu.round_tracker.rest.tracking.model;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-public record UserAmmunitionSummaryDto(
+public record AmmunitionSummaryDto(
         String userId,
 
         Map<String, SummaryEntryDto> codeToSummary

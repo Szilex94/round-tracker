@@ -7,19 +7,14 @@ import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode;
 import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
 import com.github.szilex94.edu.round_tracker.rest.support.CaliberTypeDefinitionDto;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionChangeDto;
-import com.github.szilex94.edu.round_tracker.rest.tracking.model.UserAmmunitionSummaryDto;
+import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionSummaryDto;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 import java.util.stream.Stream;
@@ -27,14 +22,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrackingIT extends BaseTestContainerIT {
-
-    @LocalServerPort
-    @Deprecated
-    private int port;
-
-    @Autowired
-    @Deprecated
-    private TestRestTemplate testRestTemplate;
 
     @Autowired
     private WebTestClient webTestClient;
@@ -52,21 +39,12 @@ public class TrackingIT extends BaseTestContainerIT {
         this.caliberDefinition = utilities.createNewCaliberTypeDefinition();
     }
 
-    @Deprecated
-    private UriComponentsBuilder getBasePath() {
-        return UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(this.port)
-                .path(Endpoints.TRACKING)
-                .uriVariables(Map.of("userId", profileDto.getId()));
-    }
-
 
     private static Stream<AmmunitionChangeDto> invalidAmmunitionChangeSource() {
         return Stream.<AmmunitionChangeDto>builder()
                 .add(new AmmunitionChangeDto(null, null, 1))//Null ammunitionCode
                 .add(new AmmunitionChangeDto(null, "", 1))//Empty AmmunitionCode
+                .add(new AmmunitionChangeDto(null, "hasText", 0))//Amount is zero
                 .build();
     }
 
@@ -101,97 +79,258 @@ public class TrackingIT extends BaseTestContainerIT {
                 .uri(Endpoints.TRACKING, Map.of("userId", this.profileDto.getId()));
     }
 
-//TODO revisit exceptional cases
-//    @ParameterizedTest
-//    @MethodSource("trackingExceptionalCases")
-//    public void test_tracking_exceptionalCases(AmmunitionChangeDto invalidData) {
-//
-//        var response = this.testRestTemplate.postForEntity(getBasePath().toUriString(),
-//                invalidData,
-//                UserAmmunitionSummaryDto.class);
-//
-//        assertSame(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//    }
-//
-//
-//    private static Stream<AmmunitionChangeDto> trackingExceptionalCases() {
-//        return Stream.<AmmunitionChangeDto>builder()
-//                //Zero as amount
-//                .add(new AmmunitionChangeDto(null, 0, ChangeTypeDto.EXPENSE, AmmunitionTypeDto.NINE_MILLIMETER))
-//                //Missing change type
-//                .add(new AmmunitionChangeDto(null, 10, null, AmmunitionTypeDto.NINE_MILLIMETER))
-//                //Missing Ammunition Type
-//                .add(new AmmunitionChangeDto(null, 10, ChangeTypeDto.EXPENSE, null))
-//                //Unknown Ammunition type
-//                .add(new AmmunitionChangeDto(null, 10, ChangeTypeDto.EXPENSE, AmmunitionTypeDto.UNKNOWN))
-//                .build();
-//    }
-
     @Test
-    @Disabled
-    public void test_trackChange_recordReplenishment_happyFlow() {
-        var expense = new AmmunitionChangeDto(null, null,
-                10);
+    public void test_recordChange_happyFlow() {
+        final var code = caliberDefinition.code();
 
-        var response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), expense, UserAmmunitionSummaryDto.class);
+        var request = new AmmunitionChangeDto(null, code, 10);
 
-        assertSame(HttpStatus.OK, response.getStatusCode());
+        var response = postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
 
-        var body = response.getBody();
-        assertNotNull(body);
-        assertEquals(this.profileDto.getId(), body.userId());
+        assertEquals(this.profileDto.getId(), response.userId());
 
-        assertEquals(10, body.grandTotal());
+        var summaryMap = response.codeToSummary();
+        assertEquals(1, summaryMap.size());
+
+        var entry = summaryMap.get(code);
+        assertEquals(10, entry.grandTotal());
+        assertNotNull(entry.lastChangeRecordedAt());
     }
 
     @Test
-    @Disabled
-    public void test_trackChange_expense_happyFlow() {
-        var expense = new AmmunitionChangeDto(null, null,
-                -10);
+    public void test_recordChange_unknownCode() {
+        final var code = caliberDefinition.code();
 
-        var response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), expense, UserAmmunitionSummaryDto.class);
+        var request = new AmmunitionChangeDto(null, "randomStuff", 10);
 
-        assertSame(HttpStatus.OK, response.getStatusCode());
+        postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+    }
 
-        var body = response.getBody();
-        assertNotNull(body);
-        assertEquals(this.profileDto.getId(), body.userId());
 
-        assertEquals(-10, body.grandTotal());
+    @Test
+    public void test_recordChange_multipleReplenishments() {
+        final var code = caliberDefinition.code();
+
+        var request = new AmmunitionChangeDto(null, code, 10);
+
+        var response = postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertEquals(this.profileDto.getId(), response.userId());
+
+        var summaryMap = response.codeToSummary();
+        assertEquals(1, summaryMap.size());
+
+        var firstEntry = summaryMap.get(code);
+        assertEquals(10, firstEntry.grandTotal());
+        assertNotNull(firstEntry.lastChangeRecordedAt());
+
+
+        var secondResponse = postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertEquals(this.profileDto.getId(), response.userId());
+
+        var secondMap = secondResponse.codeToSummary();
+        assertEquals(1, secondMap.size());
+
+        var secondEntry = secondMap.get(code);
+        assertEquals(20, secondEntry.grandTotal());
+        assertNotNull(secondEntry.lastChangeRecordedAt());
+
+        assertTrue(secondEntry.lastChangeRecordedAt().isAfter(firstEntry.lastChangeRecordedAt()));
     }
 
     @Test
-    @Disabled
-    public void test_trackChange_additionThenExpense() {
+    public void test_recordChange_differentCodes() {
+        final var code = caliberDefinition.code();
 
-        var addition = new AmmunitionChangeDto(null, null,
-                10);
+        var request = new AmmunitionChangeDto(null, code, 10);
 
-        var response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), addition, UserAmmunitionSummaryDto.class);
+        var response = postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertSame(HttpStatus.OK, response.getStatusCode());
+        assertEquals(this.profileDto.getId(), response.userId());
 
-        var body = response.getBody();
-        assertEquals(10, body.grandTotal());
+        var summaryMap = response.codeToSummary();
+        assertEquals(1, summaryMap.size());
 
-        var expense = new AmmunitionChangeDto(null, null,
-                -10);
+        var firstEntry = summaryMap.get(code);
+        assertEquals(10, firstEntry.grandTotal());
+        assertNotNull(firstEntry.lastChangeRecordedAt());
 
-        response = this.testRestTemplate.postForEntity(getBasePath().toUriString(), expense, UserAmmunitionSummaryDto.class);
+        var secondDef = this.utilities.createNewCaliberTypeDefinition();
+        var secondRequest = new AmmunitionChangeDto(null, secondDef.code(), 5);
 
-        assertSame(HttpStatus.OK, response.getStatusCode());
 
-        body = response.getBody();
-        assertNotNull(body);
-        assertEquals(this.profileDto.getId(), body.userId());
+        var secondResponse = postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
 
-        assertEquals(0, body.grandTotal());
+        assertEquals(this.profileDto.getId(), response.userId());
+
+        var secondMap = secondResponse.codeToSummary();
+        assertEquals(2, secondMap.size());
+
+        //At this stage the map should contain two distinct entries for the two caliber codes
+        var initialCodeValue = secondMap.get(code);
+        assertEquals(10, initialCodeValue.grandTotal());
+
+        var newlyAddedCodeValue = secondMap.get(secondDef.code());
+        assertEquals(5, newlyAddedCodeValue.grandTotal());
+
     }
 
-    //TODO add test for multiple chained expenses
+    @Test
+    public void test_recordChange_trackExpense() {
+        final var code = caliberDefinition.code();
 
-    //TODO add test for chained expense and addition
+        var request = new AmmunitionChangeDto(null, code, 10);
 
-    //TODO add test for correction
+        var response = postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+
+
+        var initialTotal = response.codeToSummary().get(code).grandTotal();
+
+        assertEquals(10, initialTotal);
+
+        var secondRequest = new AmmunitionChangeDto(null, code, -5);
+        var secondResponse = postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+
+
+        var afterUpdateTotal = secondResponse.codeToSummary().get(code).grandTotal();
+        assertEquals(5, afterUpdateTotal);
+    }
+
+    @Test
+    public void test_recordChange_chainedExpenses() {
+        final var code = caliberDefinition.code();
+
+        var request = new AmmunitionChangeDto(null, code, 10);
+
+        var response = postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+
+
+        var initialTotal = response.codeToSummary().get(code).grandTotal();
+
+        assertEquals(10, initialTotal);
+
+        var secondRequest = new AmmunitionChangeDto(null, code, -5);
+        postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        var finalResponse = postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+
+
+        var afterUpdateTotal = finalResponse.codeToSummary().get(code).grandTotal();
+        assertEquals(-5, afterUpdateTotal);
+    }
+
+    @Test
+    public void test_recordChange_replenishmentAfterExpenses() {
+        final var code = caliberDefinition.code();
+
+        var request = new AmmunitionChangeDto(null, code, 10);
+
+        var response = postRequestSpec().bodyValue(request)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+
+
+        var initialTotal = response.codeToSummary().get(code).grandTotal();
+
+        assertEquals(10, initialTotal);
+
+        var secondRequest = new AmmunitionChangeDto(null, code, -5);
+        postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        var finalExpenseResponse = postRequestSpec().bodyValue(secondRequest)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+        var afterUpdateTotal = finalExpenseResponse.codeToSummary().get(code).grandTotal();
+        assertEquals(-5, afterUpdateTotal);
+
+        var replenishment = new AmmunitionChangeDto(null, code, 10);
+        var afterAddition = postRequestSpec().bodyValue(replenishment)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBody(AmmunitionSummaryDto.class)
+                .returnResult()
+                .getResponseBody();
+        var afterAdditionTotal = afterAddition.codeToSummary().get(code).grandTotal();
+        assertEquals(5, afterAdditionTotal);
+    }
+
 }
