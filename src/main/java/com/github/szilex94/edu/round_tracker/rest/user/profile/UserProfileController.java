@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("round-tracker/v1/users/profile")
+@RequestMapping("round-tracker/v1/user/profile")
 public class UserProfileController {
 
     private final UserProfileDtoMapper userMapper;

@@ -40,7 +40,6 @@ public class UserProfileRepositoryAdapterImpl implements UserProfileRepositoryAd
                 .map(mapper::fromDao);
     }
 
-    @Deprecated
     private Throwable handleWriteExceptions(Throwable throwable) {
         if (throwable instanceof DuplicateKeyException duplicateKeyException) {
             return new DuplicateUserProfileException(duplicateKeyException);

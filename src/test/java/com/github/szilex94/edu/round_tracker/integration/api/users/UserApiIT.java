@@ -1,6 +1,7 @@
 package com.github.szilex94.edu.round_tracker.integration.api.users;
 
 import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
+import com.github.szilex94.edu.round_tracker.integration.Endpoints;
 import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode;
 import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
@@ -42,7 +43,7 @@ public class UserApiIT extends BaseTestContainerIT {
                 .scheme("http")
                 .host("localhost")
                 .port(this.port)
-                .path("round-tracker/v1/users/profile");
+                .path(Endpoints.USER_PROFILE);
     }
 
     @Test
