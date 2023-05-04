@@ -47,7 +47,7 @@
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
         </root>
-        <logger name="com.github.szilex94.edu.round_tracker" level="DEBUG">
+        <logger name="com.github.szilex94.edu.round_tracker" level="DEBUG" additivity="false">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="DEV_LOG_APPENDER"/>
         </logger>
