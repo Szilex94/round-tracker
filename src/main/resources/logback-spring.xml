@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="DEV_LOG_APPENDER" class="ch.qos.logback.core.FileAppender">
+        <!-- Use a miscellaneous folder in the current workspace which is already included in the git ignore -->
+        <file>.misc/logs/roundTracker.log</file>
+        <append>false</append>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="DOCKER_LOG_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Intended to run in a docker image, use a simple log file location -->
+        <file>/logs/roundTracker.log</file>
+        <append>true</append>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily log rotation -->
+            <fileNamePattern>/logs/roundTracker.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <springProfile name="docker">
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="DOCKER_LOG_APPENDER"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+        <logger name="com.github.szilex94.edu.round_tracker" level="DEBUG">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="DEV_LOG_APPENDER"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="WARN">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
+</configuration>
