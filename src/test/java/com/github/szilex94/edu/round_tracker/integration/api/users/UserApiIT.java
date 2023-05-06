@@ -2,23 +2,22 @@ package com.github.szilex94.edu.round_tracker.integration.api.users;
 
 import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.integration.Endpoints;
-import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCodeEnum;
-import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
+import com.github.szilex94.edu.round_tracker.rest.error.ProblemDetailFactory;
+import com.github.szilex94.edu.round_tracker.rest.error.codes.UserAPIError;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.http.ProblemDetail;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class UserApiIT extends BaseTestContainerIT {
@@ -32,28 +31,18 @@ public class UserApiIT extends BaseTestContainerIT {
 
     private static final AtomicInteger COUNT = new AtomicInteger(0);
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate testRestTemplate;
-
-    public UriComponentsBuilder getBasePath() {
-        return UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port(this.port)
-                .path(Endpoints.USER_PROFILE);
-    }
+    private WebTestClient webTestClient;
 
     @Test
-    public void tes_createUser() {
+    public void test_createUser() {
         UserProfileDto userDto = createRequestObject();
 
-        var result = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
+        var body = this.webTestClient.post().uri(Endpoints.USER_PROFILE).bodyValue(userDto)
+                .exchange().expectStatus().isCreated()
+                .expectBody(UserProfileDto.class)
+                .returnResult().getResponseBody();
 
-        assertSame(HttpStatus.CREATED, result.getStatusCode());
-        var body = result.getBody();
         assertNotNull(body);
         assertNotNull(body.getId());
         assertEquals(userDto.getFirstName(), body.getFirstName());
@@ -62,25 +51,30 @@ public class UserApiIT extends BaseTestContainerIT {
     }
 
     @Test
-    public void tes_createUser_duplicate() {
+    public void test_createUser_duplicate() {
         UserProfileDto userDto = createRequestObject();
 
-        var firstPost = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
+        webTestClient.post().uri(Endpoints.USER_PROFILE).bodyValue(userDto)
+                .exchange()
+                .expectStatus().isCreated();
 
-        assertSame(HttpStatus.CREATED, firstPost.getStatusCode());
+        var expectedProblemDetail = webTestClient.post().uri(Endpoints.USER_PROFILE).bodyValue(userDto)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+                .expectBody(ProblemDetail.class)
+                .returnResult().getResponseBody();
 
-        var secondPost = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, GenericErrorResponse.class);
+        var additionalProperties = expectedProblemDetail.getProperties();
 
-        assertSame(HttpStatus.CONFLICT, secondPost.getStatusCode());
-
-        assertEquals(ApiErrorCodeEnum.USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode(), secondPost.getBody().getApiErrorCode());
+        assertEquals(UserAPIError.USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getApiErrorCode(), additionalProperties.get(ProblemDetailFactory.API_ERROR_CODE));
     }
 
     @ParameterizedTest
     @MethodSource("createUserExceptionalCasesDataSource")
     public void test_createUser_exceptionalCases(UserProfileDto requestBody) {
-        var result = this.testRestTemplate.postForEntity(getBasePath().toUriString(), requestBody, UserProfileDto.class);
-        assertSame(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        this.webTestClient.post().uri(Endpoints.USER_PROFILE).bodyValue(requestBody)
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 
     private static Stream<UserProfileDto> createUserExceptionalCasesDataSource() {
@@ -96,19 +90,19 @@ public class UserApiIT extends BaseTestContainerIT {
     public void test_retrieveUser() {
         UserProfileDto userDto = createRequestObject();
 
-        var postUser = this.testRestTemplate.postForEntity(getBasePath().toUriString(), userDto, UserProfileDto.class);
+        var postUser = this.webTestClient.post().uri(Endpoints.USER_PROFILE).bodyValue(userDto)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(UserProfileDto.class).returnResult().getResponseBody();
 
-        assertSame(HttpStatus.CREATED, postUser.getStatusCode());
-        var userId = postUser.getBody().getId();
-        var newPath = getBasePath()
-                .path("/{userId}")
-                .uriVariables(Map.of("userId", userId))
-                .toUriString();
-        var response = this.testRestTemplate.getForEntity(newPath, UserProfileDto.class);
+        var userId = postUser.getId();
 
-        assertSame(HttpStatus.OK, response.getStatusCode());
+        var responseBody = webTestClient.get().uri(Endpoints.USER_PROFILE + "/" + userId).exchange()
+                .expectStatus().isOk()
+                .expectBody(UserProfileDto.class)
+                .returnResult().getResponseBody();
 
-        var responseBody = response.getBody();
+
         assertNotNull(responseBody);
 
         assertEquals(userDto.getFirstName(), responseBody.getFirstName());
@@ -118,13 +112,8 @@ public class UserApiIT extends BaseTestContainerIT {
 
     @Test
     public void test_retrieveUser_userNotFound() {
-        var newPath = getBasePath()
-                .path("/{userId}")
-                .uriVariables(Map.of("userId", "123456"))
-                .toUriString();
-        var response = this.testRestTemplate.getForEntity(newPath, UserProfileDto.class);
-
-        assertSame(HttpStatus.NOT_FOUND, response.getStatusCode());
+        webTestClient.get().uri(Endpoints.USER_PROFILE + "/randomTextInsteadOfUserId").exchange()
+                .expectStatus().isNotFound();
     }
 
     private static UserProfileDto createRequestObject() {

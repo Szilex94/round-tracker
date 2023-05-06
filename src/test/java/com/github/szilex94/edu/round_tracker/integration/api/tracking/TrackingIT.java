@@ -3,17 +3,19 @@ package com.github.szilex94.edu.round_tracker.integration.api.tracking;
 import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.integration.Endpoints;
 import com.github.szilex94.edu.round_tracker.integration.RestTestUtilities;
-import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCodeEnum;
-import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
+import com.github.szilex94.edu.round_tracker.rest.error.ProblemDetailFactory;
+import com.github.szilex94.edu.round_tracker.rest.error.codes.TrackingAPIError;
 import com.github.szilex94.edu.round_tracker.rest.support.CaliberTypeDefinitionDto;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionChangeDto;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionSummaryDto;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ProblemDetail;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.Map;
@@ -64,10 +66,12 @@ public class TrackingIT extends BaseTestContainerIT {
                 .exchange()
                 .expectStatus()
                 .isBadRequest()
-                .expectBody(GenericErrorResponse.class)
+                .expectBody(ProblemDetail.class)
                 .returnResult().getResponseBody();
 
-        assertEquals(ApiErrorCodeEnum.UNKNOWN_AMMUNITION_CODE.getCode(), body.getApiErrorCode());
+        var additionalProperties = body.getProperties();
+        assertNotNull(additionalProperties);
+        Assertions.assertEquals(TrackingAPIError.UNKNOWN_AMMUNITION_CODE.getApiErrorCode(), additionalProperties.get(ProblemDetailFactory.API_ERROR_CODE));
     }
 
 
