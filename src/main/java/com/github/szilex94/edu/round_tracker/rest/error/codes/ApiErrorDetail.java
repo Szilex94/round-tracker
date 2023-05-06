@@ -22,10 +22,4 @@ public sealed interface ApiErrorDetail permits SystemAPIError, UserAPIError {
      */
     String getTitle();
 
-    /**
-     * @return human-readable description (i.e. long summary)
-     */
-    String getDetail();
-
-
 }

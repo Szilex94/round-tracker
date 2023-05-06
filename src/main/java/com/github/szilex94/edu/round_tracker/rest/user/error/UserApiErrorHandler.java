@@ -20,7 +20,7 @@ public class UserApiErrorHandler extends ResponseEntityExceptionHandler {
         //TODO create a github wiki page for errors?
         result.setType(URI.create("https://github.com/Szilex94/round-tracker/wiki/User-API"));
         result.setTitle("Duplicate User Id");
-        result.setDetail("The supplied userId is taken! Please retry with a different one!");
+        result.setDetail(ex.getMessage());
 
         return result;
     }

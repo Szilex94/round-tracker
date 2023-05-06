@@ -35,7 +35,6 @@ public final class ErrorHandlingUtils {
      * Transfers the following information into the supplied {@link ProblemDetail} instance:
      * <ul>
      *     <li>title</li>
-     *     <li>details</li>
      *     <li>apiErrorCode (as property using {@link ApiErrorDetail#API_ERROR_CODE} as key)</li>
      * </ul>
      *
@@ -49,7 +48,6 @@ public final class ErrorHandlingUtils {
         checkArgument(target != null, "Null problemDetail not allowed!");
 
         target.setTitle(source.getTitle());
-        target.setDetail(source.getDetail());
         target.setProperty(ApiErrorDetail.API_ERROR_CODE, source.getApiErrorCode());
 
         return target;
