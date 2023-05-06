@@ -3,7 +3,7 @@ package com.github.szilex94.edu.round_tracker.integration.api.tracking;
 import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.integration.Endpoints;
 import com.github.szilex94.edu.round_tracker.integration.RestTestUtilities;
-import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode;
+import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCodeEnum;
 import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
 import com.github.szilex94.edu.round_tracker.rest.support.CaliberTypeDefinitionDto;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionChangeDto;
@@ -67,7 +67,7 @@ public class TrackingIT extends BaseTestContainerIT {
                 .expectBody(GenericErrorResponse.class)
                 .returnResult().getResponseBody();
 
-        assertEquals(ApiErrorCode.UNKNOWN_AMMUNITION_CODE.getCode(), body.getApiErrorCode());
+        assertEquals(ApiErrorCodeEnum.UNKNOWN_AMMUNITION_CODE.getCode(), body.getApiErrorCode());
     }
 
 

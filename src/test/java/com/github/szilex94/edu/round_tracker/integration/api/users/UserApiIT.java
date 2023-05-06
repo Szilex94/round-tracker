@@ -2,7 +2,7 @@ package com.github.szilex94.edu.round_tracker.integration.api.users;
 
 import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.integration.Endpoints;
-import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode;
+import com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCodeEnum;
 import com.github.szilex94.edu.round_tracker.rest.error.GenericErrorResponse;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,7 @@ public class UserApiIT extends BaseTestContainerIT {
 
         assertSame(HttpStatus.CONFLICT, secondPost.getStatusCode());
 
-        assertEquals(ApiErrorCode.USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode(), secondPost.getBody().getApiErrorCode());
+        assertEquals(ApiErrorCodeEnum.USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode(), secondPost.getBody().getApiErrorCode());
     }
 
     @ParameterizedTest

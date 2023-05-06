@@ -1,6 +1,5 @@
 package com.github.szilex94.edu.round_tracker.rest.error;
 
-import com.github.szilex94.edu.round_tracker.repository.exception.DuplicateUserProfileException;
 import com.github.szilex94.edu.round_tracker.service.support.caliber.DuplicateCaliberCodeException;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.UnknownAmmunitionCodeException;
 import org.springframework.http.HttpHeaders;
@@ -13,28 +12,28 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.time.OffsetDateTime;
 
-import static com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCode.*;
+import static com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCodeEnum.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = DuplicateUserProfileException.class)
-    protected ResponseEntity<Object> handleConflict(
-            RuntimeException ex,
-            WebRequest request) {
-
-
-        var body = new GenericErrorResponse()
-                .setApiErrorCode(USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode())
-                .setOccurred(OffsetDateTime.now())
-                .setMessage(ex.getMessage());
-
-        return handleExceptionInternal(ex,
-                body,
-                new HttpHeaders(),
-                HttpStatus.CONFLICT,
-                request);
-    }
+//    @ExceptionHandler(value = DuplicateUserProfileException.class)
+//    protected ResponseEntity<Object> handleConflict(
+//            RuntimeException ex,
+//            WebRequest request) {
+//
+//
+//        var body = new GenericErrorResponse()
+//                .setApiErrorCode(USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode())
+//                .setOccurred(OffsetDateTime.now())
+//                .setMessage(ex.getMessage());
+//
+//        return handleExceptionInternal(ex,
+//                body,
+//                new HttpHeaders(),
+//                HttpStatus.CONFLICT,
+//                request);
+//    }
 
     @ExceptionHandler(value = DuplicateCaliberCodeException.class)
     protected ResponseEntity<Object> handleDuplicateCaliberCode(
