@@ -11,6 +11,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  *
  * @author szilex94
  */
+@Deprecated
 public final class ErrorHandlingUtils {
 
     private ErrorHandlingUtils() {
