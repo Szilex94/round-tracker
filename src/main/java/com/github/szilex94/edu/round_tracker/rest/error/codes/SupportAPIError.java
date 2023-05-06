@@ -1,18 +1,18 @@
 package com.github.szilex94.edu.round_tracker.rest.error.codes;
 
 /**
- * Enumeration containing errors encountered while managing users
+ * Contains errors which can occur in the components which support the system
  *
  * @author szilex94
  */
-public enum UserAPIError implements ApiErrorDetail {
-    USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT("up-0000", "User Id already in use");
+public enum SupportAPIError implements ApiErrorDetail {
+    CALIBER_DEFINITION_CODE_CONFLICT("cd-0000", "Caliber definition already exists");
 
     private final String apiErrorCode;
 
     private final String title;
 
-    UserAPIError(String apiErrorCode, String title) {
+    SupportAPIError(String apiErrorCode, String title) {
         this.apiErrorCode = apiErrorCode;
         this.title = title;
     }
@@ -26,5 +26,4 @@ public enum UserAPIError implements ApiErrorDetail {
     public String getTitle() {
         return this.title;
     }
-
 }

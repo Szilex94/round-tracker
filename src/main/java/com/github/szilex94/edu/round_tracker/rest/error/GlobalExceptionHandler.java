@@ -1,9 +1,11 @@
 package com.github.szilex94.edu.round_tracker.rest.error;
 
+import com.github.szilex94.edu.round_tracker.rest.error.codes.SystemAPIError;
 import com.github.szilex94.edu.round_tracker.service.support.caliber.DuplicateCaliberCodeException;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.UnknownAmmunitionCodeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,23 +19,11 @@ import static com.github.szilex94.edu.round_tracker.rest.error.ApiErrorCodeEnum.
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-//    @ExceptionHandler(value = DuplicateUserProfileException.class)
-//    protected ResponseEntity<Object> handleConflict(
-//            RuntimeException ex,
-//            WebRequest request) {
-//
-//
-//        var body = new GenericErrorResponse()
-//                .setApiErrorCode(USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT.getCode())
-//                .setOccurred(OffsetDateTime.now())
-//                .setMessage(ex.getMessage());
-//
-//        return handleExceptionInternal(ex,
-//                body,
-//                new HttpHeaders(),
-//                HttpStatus.CONFLICT,
-//                request);
-//    }
+    private final ProblemDetailFactory pdFactory;
+
+    public GlobalExceptionHandler(ProblemDetailFactory pdFactory) {
+        this.pdFactory = pdFactory;
+    }
 
     @ExceptionHandler(value = DuplicateCaliberCodeException.class)
     protected ResponseEntity<Object> handleDuplicateCaliberCode(
@@ -72,18 +62,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = UnsupportedOperationException.class)
-    protected ResponseEntity<Object> handleUnsupportedAPICall(RuntimeException ex,
-                                                              WebRequest request) {
-        var body = new GenericErrorResponse()
-                .setApiErrorCode(SYSTEM_API_NOT_SUPPORTED.getCode())
-                .setMessage(ex.getMessage())
-                .setOccurred(OffsetDateTime.now());
-
-        return handleExceptionInternal(ex,
-                body,
-                new HttpHeaders(),
-                HttpStatus.NOT_IMPLEMENTED,
-                request);
+    protected ProblemDetail handleUnsupportedAPICall(RuntimeException ex) {
+        var result = pdFactory.createAndInitiate(HttpStatus.NOT_IMPLEMENTED, SystemAPIError.SYSTEM_API_NOT_SUPPORTED);
+        result.setDetail(ex.getMessage());
+        return result;
     }
 
 }

@@ -1,18 +1,18 @@
 package com.github.szilex94.edu.round_tracker.rest.error.codes;
 
 /**
- * Enumeration containing errors encountered while managing users
+ * Enumeration encompassing errors encountered while tracking ammunition change
  *
  * @author szilex94
  */
-public enum UserAPIError implements ApiErrorDetail {
-    USER_PROFILE_UNIQUE_IDENTIFIER_CONFLICT("up-0000", "User Id already in use");
+public enum TrackingAPIError implements ApiErrorDetail {
+    UNKNOWN_AMMUNITION_CODE("ac-0000", "Unknown ammunition code");
 
     private final String apiErrorCode;
 
     private final String title;
 
-    UserAPIError(String apiErrorCode, String title) {
+    TrackingAPIError(String apiErrorCode, String title) {
         this.apiErrorCode = apiErrorCode;
         this.title = title;
     }
@@ -26,5 +26,4 @@ public enum UserAPIError implements ApiErrorDetail {
     public String getTitle() {
         return this.title;
     }
-
 }
