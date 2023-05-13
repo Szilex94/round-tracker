@@ -5,7 +5,7 @@ import com.github.szilex94.edu.round_tracker.integration.Endpoints;
 import com.github.szilex94.edu.round_tracker.integration.RestTestUtilities;
 import com.github.szilex94.edu.round_tracker.rest.error.ProblemDetailFactory;
 import com.github.szilex94.edu.round_tracker.rest.error.codes.TrackingAPIError;
-import com.github.szilex94.edu.round_tracker.rest.support.CaliberTypeDefinitionDto;
+import com.github.szilex94.edu.round_tracker.rest.support.caliber.CaliberTypeDefinitionDto;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionChangeDto;
 import com.github.szilex94.edu.round_tracker.rest.tracking.model.AmmunitionSummaryDto;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;

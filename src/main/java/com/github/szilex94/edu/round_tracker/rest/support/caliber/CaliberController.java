@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.rest.support;
+package com.github.szilex94.edu.round_tracker.rest.support.caliber;
 
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnCreate;
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnUpdate;
@@ -20,25 +20,25 @@ import static org.springframework.http.MediaType.APPLICATION_NDJSON_VALUE;
  * @author szilex94
  */
 @RestController
-@RequestMapping("round-tracker/v1/support")
-public class SupportController {
+@RequestMapping("round-tracker/v1/support/caliber")
+public class CaliberController {
 
     private final CaliberTypeMapper mapper;
 
     private final CaliberDefinitionService caliberService;
 
-    public SupportController(CaliberTypeMapper mapper, CaliberDefinitionService caliberService) {
+    public CaliberController(CaliberTypeMapper mapper, CaliberDefinitionService caliberService) {
         this.mapper = mapper;
         this.caliberService = caliberService;
     }
 
-    @GetMapping(path = "/caliberDefinition", produces = APPLICATION_NDJSON_VALUE)
+    @GetMapping(produces = APPLICATION_NDJSON_VALUE)
     public Flux<CaliberTypeDefinitionDto> getSupportedCalibers() {
         return caliberService.retrieveCaliberDefinitions()
                 .map(mapper::toDto);
     }
 
-    @PostMapping(path = "/caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<CaliberTypeDefinitionDto> addCaliberDefinition(@Validated(OnCreate.class) @RequestBody CaliberTypeDefinitionDto dto) {
         var def = mapper.fromDto(dto);
@@ -46,7 +46,7 @@ public class SupportController {
                 .map(mapper::toDto);
     }
 
-    @PatchMapping(path = "/caliberDefinition", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @PatchMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public Mono<CaliberTypeDefinitionDto> patchCaliberDefinition(@Validated(OnUpdate.class) @RequestBody CaliberTypeDefinitionDto dto) {
         return this.caliberService.updateExisting(dto.code(), existing -> applyPatch(existing, dto))
                 .switchIfEmpty(Mono.error(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))
