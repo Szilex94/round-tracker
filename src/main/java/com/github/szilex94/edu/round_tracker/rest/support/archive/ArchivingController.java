@@ -17,7 +17,7 @@ public class ArchivingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Mono<Void> addCaliberDefinition() {
+    public Mono<Void> triggerArchivingProcess() {
         throw new UnsupportedOperationException("TBD");
     }
 
