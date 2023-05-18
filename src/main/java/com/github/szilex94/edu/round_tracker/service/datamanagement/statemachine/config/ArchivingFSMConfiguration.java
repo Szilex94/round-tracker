@@ -1,5 +1,6 @@
 package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.config;
 
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.MarkAction;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.ArchivingEvent;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataManagementEvent;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.ArchivingState;
@@ -7,6 +8,7 @@ import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.GenericState;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
@@ -21,6 +23,9 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 @Slf4j
 public class ArchivingFSMConfiguration extends StateMachineConfigurerAdapter<DataManagementState, DataManagementEvent> {
 
+    @Autowired
+    private MarkAction markAction;
+
     @Override
     public void configure(StateMachineConfigurationConfigurer<DataManagementState, DataManagementEvent> config) throws Exception {
         config.withConfiguration()
@@ -34,7 +39,7 @@ public class ArchivingFSMConfiguration extends StateMachineConfigurerAdapter<Dat
 
         states.withStates()
                 .initial(GenericState.IDLE)
-                .stateDo(ArchivingState.MARK_ENTITIES, new SimpleAction("MARK"))
+                .stateDoFunction(ArchivingState.MARK_ENTITIES, markAction)
                 .stateDo(ArchivingState.TRANSFER, new SimpleAction("TRANSFER"))
                 .stateDo(ArchivingState.CLEANUP, new SimpleAction("CLEANUP"))
                 .states(DataManagementState.allStates());

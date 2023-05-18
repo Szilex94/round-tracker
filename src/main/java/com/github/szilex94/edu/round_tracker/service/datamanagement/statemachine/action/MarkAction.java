@@ -4,6 +4,7 @@ import com.github.szilex94.edu.round_tracker.service.datamanagement.archiving.ti
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataManagementEvent;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.DataManagementState;
 import com.github.szilex94.edu.round_tracker.service.tracking.AmmunitionExpenseTrackingService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.StateContext;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Mono;
  * @author szilex94
  */
 @Component
+@Slf4j
 public final class MarkAction implements ArchivingAction {
 
     private final ArchivingTimeSupplier timeSupplier;
@@ -27,7 +29,15 @@ public final class MarkAction implements ArchivingAction {
 
     @Override
     public Mono<Void> apply(StateContext<DataManagementState, DataManagementEvent> dataManagementStateDataManagementEventStateContext) {
-        var cutoff = timeSupplier.get();
-        return trackingService.markEntriesForArchiving(cutoff);
+        return Mono.fromSupplier(timeSupplier::get)
+                .doOnNext(time -> log.info("Proceeding to mark entries created before: {} for archiving!", time))
+                .flatMap(trackingService::markEntriesForArchiving)
+                .doOnSuccess(updatedCount -> log.info("Successfully marked {} entries for archiving!", updatedCount))
+                .doOnError(this::onError)
+                .then();
+    }
+
+    private void onError(Throwable throwable) {
+        log.error("Failed to carry out mark action!", throwable);
     }
 }

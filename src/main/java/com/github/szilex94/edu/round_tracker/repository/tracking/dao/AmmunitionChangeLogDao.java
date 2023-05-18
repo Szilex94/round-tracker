@@ -18,6 +18,10 @@ import java.time.OffsetDateTime;
         granularity = Granularity.HOURS)
 public class AmmunitionChangeLogDao {
 
+    public static final String FIELD_RECORDED_AT = "recordedAt";
+
+    public static final String FIELD_MARKED_FOR_ARCHIVING = "markedForArchiving";
+
     @Id
     private String id;
 
@@ -31,5 +35,7 @@ public class AmmunitionChangeLogDao {
     private ChangeTypeDao changeType;
 
     private int amount;
+
+    private boolean markedForArchiving;
 
 }

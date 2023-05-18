@@ -4,6 +4,8 @@ import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionC
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 /**
  * Offer specialized queries which leverage functionalities offered by MongoDB
  *
@@ -12,4 +14,6 @@ import reactor.core.publisher.Mono;
 public interface CustomTrackingRepository {
 
     Mono<AmmunitionSummaryDao> recordAmmunitionChange(AmmunitionChangeLogDao change);
+
+    Mono<Long> markEntriesForArchiving(LocalDate cutoff);
 }

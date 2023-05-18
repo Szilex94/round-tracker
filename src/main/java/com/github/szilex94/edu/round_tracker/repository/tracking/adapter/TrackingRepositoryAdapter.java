@@ -4,6 +4,8 @@ import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionCh
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChangeSummary;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 /**
  * Handles persistence of changes relating to ammunition
  *
@@ -19,5 +21,11 @@ public interface TrackingRepositoryAdapter {
      */
     Mono<AmmunitionChangeSummary> recordAmmunitionChange(AmmunitionChange change);
 
-    void markEntriesForArchiving();
+    /**
+     * Marks all entries which are before the supplied cutoff for archiving
+     *
+     * @param cutoff not null
+     * @return a mono containing the updated count
+     */
+    Mono<Long> markEntriesForArchiving(LocalDate cutoff);
 }

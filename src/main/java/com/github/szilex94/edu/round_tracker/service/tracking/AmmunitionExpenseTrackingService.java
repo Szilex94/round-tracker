@@ -24,7 +24,7 @@ public interface AmmunitionExpenseTrackingService {
      * Traverses the DB and marks entries for archiving
      *
      * @param cutOff non-null time stamp, all entries before this time stamp will be marked for archiving
-     * @return TODO figure it out
+     * @return the number of entries which where marked
      */
-    Mono<Void> markEntriesForArchiving(LocalDate cutOff);
+    Mono<Long> markEntriesForArchiving(LocalDate cutOff);
 }

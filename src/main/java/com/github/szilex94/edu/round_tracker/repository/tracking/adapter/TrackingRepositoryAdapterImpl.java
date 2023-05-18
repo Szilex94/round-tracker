@@ -7,6 +7,8 @@ import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionCh
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Component
 public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter {
 
@@ -29,7 +31,7 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
     }
 
     @Override
-    public void markEntriesForArchiving() {
-        throw new UnsupportedOperationException("TBD");
+    public Mono<Long> markEntriesForArchiving(LocalDate cutoff) {
+       return repository.markEntriesForArchiving(cutoff);
     }
 }
