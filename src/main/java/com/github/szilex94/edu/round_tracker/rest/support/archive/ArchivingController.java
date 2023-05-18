@@ -2,8 +2,11 @@ package com.github.szilex94.edu.round_tracker.rest.support.archive;
 
 import com.github.szilex94.edu.round_tracker.service.datamanagement.archiving.ArchivingService;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.archiving.ArchivingSubmissionRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -24,15 +27,15 @@ public class ArchivingController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public Mono<ArchiveStatusDTO> triggerArchivingProcess() {
+    public Mono<ResponseEntity<ArchiveStatusDTO>> triggerArchivingProcess() {
         return archivingService.triggerArchivingProcess()
                 .map(this::convertToResponse);
     }
 
-    private ArchiveStatusDTO convertToResponse(ArchivingSubmissionRequest in) {
-        //TODO proper message conversion
-        return new ArchiveStatusDTO();
+    private ResponseEntity<ArchiveStatusDTO> convertToResponse(ArchivingSubmissionRequest submissionResult) {
+        boolean wasAccepted = submissionResult.accepted();
+        return (wasAccepted ? ResponseEntity.accepted() : ResponseEntity.ok())
+                .body(new ArchiveStatusDTO(wasAccepted, submissionResult.detail().orElse("N/A")));
     }
 
 }
