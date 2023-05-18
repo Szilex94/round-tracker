@@ -29,7 +29,7 @@ public final class MarkAction implements ArchivingAction {
 
     @Override
     public Mono<Void> apply(StateContext<DataManagementState, DataFlowEvent> dataManagementStateDataManagementEventStateContext) {
-        return Mono.fromSupplier(timeSupplier::get)
+        return Mono.fromSupplier(timeSupplier)
                 .doOnNext(time -> log.info("Proceeding to mark entries created before: {} for archiving!", time))
                 .flatMap(trackingService::markEntriesForArchiving)
                 .doOnSuccess(updatedCount -> log.info("Successfully marked {} entries for archiving!", updatedCount))

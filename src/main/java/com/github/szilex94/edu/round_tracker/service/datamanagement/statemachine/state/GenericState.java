@@ -6,5 +6,5 @@ package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachin
  * @author szilex94
  */
 public enum GenericState implements DataManagementState {
-    IDLE;
+    IDLE
 }
