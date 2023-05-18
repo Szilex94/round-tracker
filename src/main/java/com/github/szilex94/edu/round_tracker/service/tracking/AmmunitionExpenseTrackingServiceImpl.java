@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 @Slf4j
 public class AmmunitionExpenseTrackingServiceImpl implements AmmunitionExpenseTrackingService {
@@ -22,5 +24,10 @@ public class AmmunitionExpenseTrackingServiceImpl implements AmmunitionExpenseTr
         log.debug("Received change request {}!", change);
 
         return repositoryAdapter.recordAmmunitionChange(change);
+    }
+
+    @Override
+    public Mono<Void> markEntriesForArchiving(LocalDate cutOff) {
+        throw new UnsupportedOperationException("Implement in service!");
     }
 }

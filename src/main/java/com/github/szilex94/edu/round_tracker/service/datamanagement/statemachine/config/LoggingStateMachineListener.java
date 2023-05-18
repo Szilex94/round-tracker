@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.config;
+package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.StateMachine;

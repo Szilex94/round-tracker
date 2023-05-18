@@ -18,4 +18,6 @@ public interface TrackingRepositoryAdapter {
      * @return the log entry created for the supplied change
      */
     Mono<AmmunitionChangeSummary> recordAmmunitionChange(AmmunitionChange change);
+
+    void markEntriesForArchiving();
 }

@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.state;
+package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state;
 
 /**
  * Contains generic states which are shared

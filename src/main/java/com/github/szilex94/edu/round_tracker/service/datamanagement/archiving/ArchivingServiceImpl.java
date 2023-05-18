@@ -1,8 +1,8 @@
 package com.github.szilex94.edu.round_tracker.service.datamanagement.archiving;
 
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.event.ArchivingEvent;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.event.DataManagementEvent;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.state.DataManagementState;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.ArchivingEvent;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataManagementEvent;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.DataManagementState;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.statemachine.StateMachine;

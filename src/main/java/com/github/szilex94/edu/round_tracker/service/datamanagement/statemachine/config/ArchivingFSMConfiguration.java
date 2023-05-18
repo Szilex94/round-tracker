@@ -1,10 +1,10 @@
-package com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.config;
+package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.config;
 
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.event.ArchivingEvent;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.event.DataManagementEvent;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.state.ArchivingState;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.state.DataManagementState;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.state.GenericState;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.ArchivingEvent;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataManagementEvent;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.ArchivingState;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.DataManagementState;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.GenericState;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -67,6 +67,12 @@ public class ArchivingFSMConfiguration extends StateMachineConfigurerAdapter<Dat
         @Override
         public void execute(StateContext<DataManagementState, DataManagementEvent> context) {
             log.info("Simple Action '{}' performed", actionName);
+            try {
+                Thread.sleep(5_000);
+            } catch (InterruptedException e) {
+                log.error("Well that failed!", e);
+//                throw new RuntimeException(e);
+            }
         }
     }
 

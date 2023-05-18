@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.service.datamanagement.fsm.event;
+package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event;
 
 /**
  * Marker interface which groups all data management events

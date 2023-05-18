@@ -27,4 +27,9 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
                 .map(mapper::toAmmunitionChange);
 
     }
+
+    @Override
+    public void markEntriesForArchiving() {
+        throw new UnsupportedOperationException("TBD");
+    }
 }
