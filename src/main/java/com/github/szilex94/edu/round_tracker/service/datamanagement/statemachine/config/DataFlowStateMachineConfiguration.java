@@ -1,8 +1,7 @@
 package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.config;
 
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.MarkAction;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.ArchivingEvent;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataManagementEvent;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataFlowEvent;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.ArchivingState;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.DataManagementState;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.GenericState;
@@ -21,20 +20,20 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 @Configuration
 @EnableStateMachine(contextEvents = false)
 @Slf4j
-public class ArchivingFSMConfiguration extends StateMachineConfigurerAdapter<DataManagementState, DataManagementEvent> {
+public class DataFlowStateMachineConfiguration extends StateMachineConfigurerAdapter<DataManagementState, DataFlowEvent> {
 
     @Autowired
     private MarkAction markAction;
 
     @Override
-    public void configure(StateMachineConfigurationConfigurer<DataManagementState, DataManagementEvent> config) throws Exception {
+    public void configure(StateMachineConfigurationConfigurer<DataManagementState, DataFlowEvent> config) throws Exception {
         config.withConfiguration()
                 .autoStartup(true)
                 .listener(new LoggingStateMachineListener<>());
     }
 
     @Override
-    public void configure(StateMachineStateConfigurer<DataManagementState, DataManagementEvent> states)
+    public void configure(StateMachineStateConfigurer<DataManagementState, DataFlowEvent> states)
             throws Exception {
 
         states.withStates()
@@ -46,12 +45,12 @@ public class ArchivingFSMConfiguration extends StateMachineConfigurerAdapter<Dat
     }
 
     @Override
-    public void configure(StateMachineTransitionConfigurer<DataManagementState, DataManagementEvent> transitions)
+    public void configure(StateMachineTransitionConfigurer<DataManagementState, DataFlowEvent> transitions)
             throws Exception {
 
         transitions
                 .withExternal()
-                .source(GenericState.IDLE).target(ArchivingState.MARK_ENTITIES).event(ArchivingEvent.ARCHIVING_START)
+                .source(GenericState.IDLE).target(ArchivingState.MARK_ENTITIES).event(DataFlowEvent.ARCHIVING_START)
                 .and()
                 .withExternal()
                 .source(ArchivingState.MARK_ENTITIES).target(ArchivingState.TRANSFER)
@@ -64,13 +63,13 @@ public class ArchivingFSMConfiguration extends StateMachineConfigurerAdapter<Dat
     }
 
     @AllArgsConstructor
-    static class SimpleAction implements Action<DataManagementState, DataManagementEvent> {
+    static class SimpleAction implements Action<DataManagementState, DataFlowEvent> {
 
         private String actionName;
 
 
         @Override
-        public void execute(StateContext<DataManagementState, DataManagementEvent> context) {
+        public void execute(StateContext<DataManagementState, DataFlowEvent> context) {
             log.info("Simple Action '{}' performed", actionName);
             try {
                 Thread.sleep(5_000);

@@ -1,7 +1,7 @@
 package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action;
 
 import com.github.szilex94.edu.round_tracker.service.datamanagement.archiving.time.ArchivingTimeSupplier;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataManagementEvent;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataFlowEvent;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.DataManagementState;
 import com.github.szilex94.edu.round_tracker.service.tracking.AmmunitionExpenseTrackingService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public final class MarkAction implements ArchivingAction {
     }
 
     @Override
-    public Mono<Void> apply(StateContext<DataManagementState, DataManagementEvent> dataManagementStateDataManagementEventStateContext) {
+    public Mono<Void> apply(StateContext<DataManagementState, DataFlowEvent> dataManagementStateDataManagementEventStateContext) {
         return Mono.fromSupplier(timeSupplier::get)
                 .doOnNext(time -> log.info("Proceeding to mark entries created before: {} for archiving!", time))
                 .flatMap(trackingService::markEntriesForArchiving)
