@@ -1,5 +1,6 @@
 package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.config;
 
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.EntityTransferAction;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.MarkAction;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataFlowEvent;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.ArchivingState;
@@ -25,6 +26,9 @@ public class DataFlowStateMachineConfiguration extends StateMachineConfigurerAda
     @Autowired
     private MarkAction markAction;
 
+    @Autowired
+    private EntityTransferAction transferAction;
+
     @Override
     public void configure(StateMachineConfigurationConfigurer<DataManagementState, DataFlowEvent> config) throws Exception {
         config.withConfiguration()
@@ -39,7 +43,7 @@ public class DataFlowStateMachineConfiguration extends StateMachineConfigurerAda
         states.withStates()
                 .initial(GenericState.IDLE)
                 .stateDoFunction(ArchivingState.MARK_ENTITIES, markAction)
-                .stateDo(ArchivingState.TRANSFER, new SimpleAction("TRANSFER"))
+                .stateDoFunction(ArchivingState.TRANSFER, transferAction)
                 .stateDo(ArchivingState.CLEANUP, new SimpleAction("CLEANUP"))
                 .states(DataManagementState.allStates());
     }
