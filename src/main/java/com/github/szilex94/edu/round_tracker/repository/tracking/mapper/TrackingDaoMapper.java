@@ -4,7 +4,10 @@ import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionC
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChange;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChangeSummary;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TrackingDaoMapper {
@@ -26,5 +29,13 @@ public interface TrackingDaoMapper {
     }
 
     AmmunitionChangeSummary.Builder builderWithCoreFields(AmmunitionSummaryDao dao);
+
+    @Mapping(source = "archivingState", target = "archived", qualifiedByName = "archivingStatusToBoolean")
+    AmmunitionChange fromDao(AmmunitionChangeLogDao dao);
+
+    @Named("archivingStatusToBoolean")
+    default boolean isArchived(AmmunitionChangeLogDao.ArchivingStatus status) {
+        return status == AmmunitionChangeLogDao.ArchivingStatus.ARCHIVED;
+    }
 
 }

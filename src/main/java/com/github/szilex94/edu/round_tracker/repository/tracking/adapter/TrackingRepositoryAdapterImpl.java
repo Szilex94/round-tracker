@@ -5,6 +5,7 @@ import com.github.szilex94.edu.round_tracker.repository.tracking.repository.Trac
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChange;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChangeSummary;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -36,7 +37,8 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
     }
 
     @Override
-    public Mono<Void> transferMarkedEntities() {
-        return repository.transferMarkedEntities();
+    public Flux<AmmunitionChange> transferMarkedEntities() {
+        return repository.transferMarkedEntities()
+                .map(this.mapper::fromDao);
     }
 }

@@ -1,5 +1,7 @@
 package com.github.szilex94.edu.round_tracker.service.tracking;
 
+import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -17,7 +19,7 @@ public interface AmmunitionExpenseArchivingService {
     /**
      * Transfers entities which where marked by {@link #markEntriesForArchiving(LocalDate)} into a long term storage
      *
-     * @return TODO figure out return type
+     * @return a flux of each entity which was transferred
      */
-    Mono<Void> transferMarkedEntities();
+    Flux<AmmunitionChange> transferMarkedEntities();
 }

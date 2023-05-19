@@ -20,7 +20,7 @@ public class AmmunitionChangeLogDao {
 
     public static final String FIELD_RECORDED_AT = "recordedAt";
 
-    public static final String FIELD_MARKED_FOR_ARCHIVING = "markedForArchiving";
+    public static final String FIELD_ARCHIVING_STATE = "archivingState";
 
     @Id
     private String id;
@@ -36,6 +36,12 @@ public class AmmunitionChangeLogDao {
 
     private int amount;
 
-    private boolean markedForArchiving;
+    private ArchivingStatus archivingState = ArchivingStatus.NONE;
+
+    public enum ArchivingStatus {
+        NONE,
+        MARKED_FOR_ARCHIVING,
+        ARCHIVED
+    }
 
 }

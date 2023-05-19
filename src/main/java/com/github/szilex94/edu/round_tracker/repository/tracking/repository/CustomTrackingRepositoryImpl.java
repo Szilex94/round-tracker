@@ -2,10 +2,13 @@ package com.github.szilex94.edu.round_tracker.repository.tracking.repository;
 
 import com.github.szilex94.edu.round_tracker.configuration.app.ArchivingConfiguration;
 import com.github.szilex94.edu.round_tracker.repository.support.caliber.mongo.CaliberTypeDefinitionDao;
+import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeBucketDao;
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao;
+import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao.ArchivingStatus;
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.UnknownAmmunitionCodeException;
 import com.mongodb.client.result.UpdateResult;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.core.query.UpdateDefinition;
 import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.reactive.TransactionalOperator;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -73,7 +77,7 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
         Query beforeDate = Query.query(Criteria.where(FIELD_RECORDED_AT).lte(cutoff));
 
         UpdateDefinition markForArchiving = new Update()
-                .set(AmmunitionChangeLogDao.FIELD_MARKED_FOR_ARCHIVING, true);
+                .set(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE, ArchivingStatus.MARKED_FOR_ARCHIVING);
 
         return reactiveMongoTemplate.update(AmmunitionChangeLogDao.class)
                 .matching(beforeDate)
@@ -83,12 +87,59 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
     }
 
     @Override
-    public Mono<Void> transferMarkedEntities() {
+    public Flux<AmmunitionChangeLogDao> transferMarkedEntities() {
 
         TransactionalOperator transactionalOperator = TransactionalOperator.create(reactiveTransactionManager);
 
+        Query query = Query.query(Criteria.where(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE).is(ArchivingStatus.MARKED_FOR_ARCHIVING))
+                .with(Sort.by(Sort.Direction.ASC, FIELD_RECORDED_AT));
 
-        return null;
+
+        return reactiveMongoTemplate.find(query, AmmunitionChangeLogDao.class)
+                .flatMap(this::moveToLongTermStorageCollection)
+                .flatMap(this::markAsArchived)
+                .as(transactionalOperator::transactional);
+    }
+
+    private Mono<AmmunitionChangeLogDao> moveToLongTermStorageCollection(AmmunitionChangeLogDao markedForArchiving) {
+
+        final var userId = markedForArchiving.getUserId();
+        final var recordedAt = markedForArchiving.getRecordedAt();
+        final var amount = markedForArchiving.getAmount();
+        var simplifiedEntry = computeSimplifiedEntry(markedForArchiving);
+
+        Query query = Query.query(Criteria.where(AmmunitionChangeBucketDao.FIELD_USER_ID).is(userId)
+                        .and(AmmunitionChangeBucketDao.FIELD_AMMUNITION_CODE).is(markedForArchiving.getAmmunitionCode())
+                        .and(AmmunitionChangeBucketDao.FIELD_ENTRY_COUNT).lt(this.bucketSize))
+                .with(Sort.by(Sort.Direction.DESC, AmmunitionChangeBucketDao.FIELD_LATEST_ENTRY_TIME_STAMP));
+
+        UpdateDefinition summaryUpsert = new Update()
+                .setOnInsert(AmmunitionChangeBucketDao.FIELD_USER_ID, userId)
+                .setOnInsert(AmmunitionChangeBucketDao.FIELD_OLDEST_ENTRY_TIME_STAMP, recordedAt)
+                .set(AmmunitionChangeBucketDao.FIELD_LATEST_ENTRY_TIME_STAMP, recordedAt)
+                .push(AmmunitionChangeBucketDao.FIELD_ENTRIES, simplifiedEntry)
+                .inc(AmmunitionChangeBucketDao.FIELD_TOTAL_AMOUNT, amount)
+                .inc(AmmunitionChangeBucketDao.FIELD_ENTRY_COUNT, 1);
+
+        //In case bucket sizes are expanded only insert into the latest one
+        return reactiveMongoTemplate.updateFirst(query, summaryUpsert, AmmunitionChangeBucketDao.class)
+                .filter(UpdateResult::wasAcknowledged)
+                .switchIfEmpty(Mono.error(ArchiveTransferFailedException.forEntity(markedForArchiving)))
+                .thenReturn(markedForArchiving);
+    }
+
+    private AmmunitionChangeBucketDao.ArchivedAmmunitionChangeLog computeSimplifiedEntry(AmmunitionChangeLogDao markedForArchiving) {
+        return new AmmunitionChangeBucketDao.ArchivedAmmunitionChangeLog(
+                markedForArchiving.getId(),
+                markedForArchiving.getRecordedAt(),
+                markedForArchiving.getChangeType(),
+                markedForArchiving.getAmount()
+        );
+    }
+
+    private Mono<AmmunitionChangeLogDao> markAsArchived(AmmunitionChangeLogDao dao) {
+        //TODO implement marking logic
+        return Mono.just(dao);
     }
 
 }

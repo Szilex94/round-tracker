@@ -2,6 +2,7 @@ package com.github.szilex94.edu.round_tracker.repository.tracking.adapter;
 
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChange;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChangeSummary;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -33,7 +34,7 @@ public interface TrackingRepositoryAdapter {
      * Transfers all entities marked in {@link #markEntriesForArchiving(LocalDate)} into dedicated buckets
      * a dedicated collection
      *
-     * @return TODO figure out return type
+     * @return a flux consisting of the entities which where transferred
      */
-    Mono<Void> transferMarkedEntities();
+    Flux<AmmunitionChange> transferMarkedEntities();
 }
