@@ -111,7 +111,7 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
         Query query = Query.query(Criteria.where(AmmunitionChangeBucketDao.FIELD_USER_ID).is(userId)
                         .and(AmmunitionChangeBucketDao.FIELD_AMMUNITION_CODE).is(markedForArchiving.getAmmunitionCode())
                         .and(AmmunitionChangeBucketDao.FIELD_ENTRY_COUNT).lt(this.bucketSize))
-                .with(Sort.by(Sort.Direction.DESC, AmmunitionChangeBucketDao.FIELD_LATEST_ENTRY_TIME_STAMP));
+                .limit(1);//TODO look into special case where limit is raised and multiple buckets can match
 
         UpdateDefinition summaryUpsert = new Update()
                 .setOnInsert(AmmunitionChangeBucketDao.FIELD_USER_ID, userId)
@@ -121,10 +121,9 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
                 .inc(AmmunitionChangeBucketDao.FIELD_TOTAL_AMOUNT, amount)
                 .inc(AmmunitionChangeBucketDao.FIELD_ENTRY_COUNT, 1);
 
-        //In case bucket sizes are expanded only insert into the latest one
-        return reactiveMongoTemplate.updateFirst(query, summaryUpsert, AmmunitionChangeBucketDao.class)
-                .filter(UpdateResult::wasAcknowledged)
-                .switchIfEmpty(Mono.error(ArchiveTransferFailedException.forEntity(markedForArchiving)))
+
+        return reactiveMongoTemplate.upsert(query, summaryUpsert, AmmunitionChangeBucketDao.class)
+                .onErrorResume(error -> Mono.error(ArchiveTransferFailedException.forEntity(markedForArchiving, error)))
                 .thenReturn(markedForArchiving);
     }
 
@@ -138,8 +137,11 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
     }
 
     private Mono<AmmunitionChangeLogDao> markAsArchived(AmmunitionChangeLogDao dao) {
-        //TODO implement marking logic
-        return Mono.just(dao);
+
+        Query q = Query.query(Criteria.where(AmmunitionChangeLogDao.FIELD_ID).is(dao.getId()));
+        UpdateDefinition ud = Update.update(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE, ArchivingStatus.ARCHIVED);
+
+        return reactiveMongoTemplate.findAndModify(q, ud, AmmunitionChangeLogDao.class);
     }
 
 }
