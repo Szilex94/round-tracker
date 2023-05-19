@@ -1,11 +1,11 @@
 package com.github.szilex94.edu.round_tracker.repository.tracking.repository;
 
+import com.github.szilex94.edu.round_tracker.configuration.app.ArchivingConfiguration;
 import com.github.szilex94.edu.round_tracker.repository.support.caliber.mongo.CaliberTypeDefinitionDao;
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao;
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.UnknownAmmunitionCodeException;
 import com.mongodb.client.result.UpdateResult;
-import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -19,17 +19,26 @@ import java.time.LocalDate;
 
 import static com.github.szilex94.edu.round_tracker.repository.support.caliber.mongo.CaliberTypeDefinitionDao.FIELD_CALIBER_CODE;
 import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao.FIELD_RECORDED_AT;
-import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.ChangeEntry.*;
+import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.ChangeEntry.FIELD_GRAND_TOTAL;
+import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.ChangeEntry.FIELD_LAST_RECORDED_CHANGE;
 import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.FIELD_ENTRIES;
 import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao.FIELD_USER_ID;
 
-@AllArgsConstructor
 public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
+
+    private final int bucketSize;
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     private final ReactiveTransactionManager reactiveTransactionManager;
 
+    public CustomTrackingRepositoryImpl(ReactiveMongoTemplate reactiveMongoTemplate,
+                                        ReactiveTransactionManager reactiveTransactionManager,
+                                        ArchivingConfiguration configuration) {
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.reactiveTransactionManager = reactiveTransactionManager;
+        this.bucketSize = configuration.bucketSize();
+    }
 
     @Override
     public Mono<AmmunitionSummaryDao> recordAmmunitionChange(AmmunitionChangeLogDao change) {
@@ -77,7 +86,6 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
     public Mono<Void> transferMarkedEntities() {
 
         TransactionalOperator transactionalOperator = TransactionalOperator.create(reactiveTransactionManager);
-
 
 
         return null;
