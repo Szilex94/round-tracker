@@ -32,6 +32,11 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
 
     @Override
     public Mono<Long> markEntriesForArchiving(LocalDate cutoff) {
-       return repository.markEntriesForArchiving(cutoff);
+        return repository.markEntriesForArchiving(cutoff);
+    }
+
+    @Override
+    public Mono<Void> transferMarkedEntities() {
+        return repository.transferMarkedEntities();
     }
 }

@@ -28,4 +28,12 @@ public interface TrackingRepositoryAdapter {
      * @return a mono containing the updated count
      */
     Mono<Long> markEntriesForArchiving(LocalDate cutoff);
+
+    /**
+     * Transfers all entities marked in {@link #markEntriesForArchiving(LocalDate)} into dedicated buckets
+     * a dedicated collection
+     *
+     * @return TODO figure out return type
+     */
+    Mono<Void> transferMarkedEntities();
 }

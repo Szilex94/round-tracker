@@ -73,4 +73,14 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
                 .map(UpdateResult::getModifiedCount);
     }
 
+    @Override
+    public Mono<Void> transferMarkedEntities() {
+
+        TransactionalOperator transactionalOperator = TransactionalOperator.create(reactiveTransactionManager);
+
+
+
+        return null;
+    }
+
 }

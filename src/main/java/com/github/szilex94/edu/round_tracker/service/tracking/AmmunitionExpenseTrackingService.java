@@ -11,7 +11,7 @@ import java.time.LocalDate;
  *
  * @author szilex94
  */
-public interface AmmunitionExpenseTrackingService {
+public interface AmmunitionExpenseTrackingService extends AmmunitionExpenseArchivingService {
 
     /**
      * @param change - represents the change which occurred to a users disposable ammunition count
@@ -19,11 +19,4 @@ public interface AmmunitionExpenseTrackingService {
      */
     Mono<AmmunitionChangeSummary> recordAmmunitionChange(AmmunitionChange change);
 
-    /**
-     * Traverses the DB and marks entries for archiving
-     *
-     * @param cutOff non-null time stamp, all entries before this time stamp will be marked for archiving
-     * @return the number of entries which where marked
-     */
-    Mono<Long> markEntriesForArchiving(LocalDate cutOff);
 }

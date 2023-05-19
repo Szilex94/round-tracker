@@ -16,4 +16,6 @@ public interface CustomTrackingRepository {
     Mono<AmmunitionSummaryDao> recordAmmunitionChange(AmmunitionChangeLogDao change);
 
     Mono<Long> markEntriesForArchiving(LocalDate cutoff);
+
+    Mono<Void> transferMarkedEntities();
 }

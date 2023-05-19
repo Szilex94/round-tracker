@@ -26,4 +26,9 @@ public class AmmunitionExpenseTrackingServiceImpl implements AmmunitionExpenseTr
     public Mono<Long> markEntriesForArchiving(LocalDate cutOff) {
         return repositoryAdapter.markEntriesForArchiving(cutOff);
     }
+
+    @Override
+    public Mono<Void> transferMarkedEntities() {
+        return repositoryAdapter.transferMarkedEntities();
+    }
 }
