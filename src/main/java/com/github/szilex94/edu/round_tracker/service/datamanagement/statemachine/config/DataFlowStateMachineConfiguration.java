@@ -2,7 +2,7 @@ package com.github.szilex94.edu.round_tracker.service.datamanagement.statemachin
 
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.EntityCleanupAction;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.EntityTransferAction;
-import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.MarkAction;
+import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.action.EntityMarkAction;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.event.DataFlowEvent;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.ArchivingState;
 import com.github.szilex94.edu.round_tracker.service.datamanagement.statemachine.state.DataManagementState;
@@ -25,7 +25,7 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 public class DataFlowStateMachineConfiguration extends StateMachineConfigurerAdapter<DataManagementState, DataFlowEvent> {
 
     @Autowired
-    private MarkAction markAction;
+    private EntityMarkAction markAction;
 
     @Autowired
     private EntityTransferAction transferAction;

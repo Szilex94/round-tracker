@@ -16,13 +16,13 @@ import reactor.core.publisher.Mono;
  */
 @Component
 @Slf4j
-public final class MarkAction implements ArchivingAction {
+public final class EntityMarkAction implements ArchivingAction {
 
     private final ArchivingTimeSupplier timeSupplier;
 
     private final AmmunitionExpenseTrackingService trackingService;
 
-    public MarkAction(ArchivingTimeSupplier timeSupplier, AmmunitionExpenseTrackingService trackingService) {
+    public EntityMarkAction(ArchivingTimeSupplier timeSupplier, AmmunitionExpenseTrackingService trackingService) {
         this.timeSupplier = timeSupplier;
         this.trackingService = trackingService;
     }
