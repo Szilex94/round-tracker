@@ -74,7 +74,8 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
     @Override
     public Mono<Long> markEntriesForArchiving(LocalDate cutoff) {
 
-        Query beforeDate = Query.query(Criteria.where(FIELD_RECORDED_AT).lte(cutoff));
+        Query beforeDate = Query.query(Criteria.where(FIELD_RECORDED_AT).lte(cutoff)
+                .and(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE).ne(ArchivingStatus.ARCHIVED)); //If the entity was already archived do not overwrite it
 
         UpdateDefinition markForArchiving = new Update()
                 .set(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE, ArchivingStatus.MARKED_FOR_ARCHIVING);
@@ -96,12 +97,12 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
 
 
         return reactiveMongoTemplate.find(query, AmmunitionChangeLogDao.class)
-                .flatMap(this::moveToLongTermStorageCollection)
+                .flatMap(this::moveToLongTermStorage)
                 .flatMap(this::markAsArchived)
                 .as(transactionalOperator::transactional);
     }
 
-    private Mono<AmmunitionChangeLogDao> moveToLongTermStorageCollection(AmmunitionChangeLogDao markedForArchiving) {
+    private Mono<AmmunitionChangeLogDao> moveToLongTermStorage(AmmunitionChangeLogDao markedForArchiving) {
 
         final var userId = markedForArchiving.getUserId();
         final var recordedAt = markedForArchiving.getRecordedAt();
