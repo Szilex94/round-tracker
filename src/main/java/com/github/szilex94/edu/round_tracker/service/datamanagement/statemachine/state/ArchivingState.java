@@ -17,9 +17,5 @@ public enum ArchivingState implements DataManagementState {
     /**
      * This stage represents the cleanup process where any leftover information is removed
      */
-    CLEANUP,
-    /**
-     * Final stage of the archiving process where the transferred information is validated
-     */
-    SANITY_CHECK
+    CLEANUP
 }
