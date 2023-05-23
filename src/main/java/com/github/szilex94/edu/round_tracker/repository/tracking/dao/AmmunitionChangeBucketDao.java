@@ -13,6 +13,7 @@ public record AmmunitionChangeBucketDao(
         String id,
         @Indexed
         String userId,
+        @Indexed
         String ammunitionCode,
         OffsetDateTime oldestEntryRecordedAt,
         OffsetDateTime latestEntryRecordedAt,

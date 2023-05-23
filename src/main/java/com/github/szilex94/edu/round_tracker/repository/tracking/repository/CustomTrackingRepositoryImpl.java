@@ -21,6 +21,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 import static com.github.szilex94.edu.round_tracker.repository.support.caliber.mongo.CaliberTypeDefinitionDao.FIELD_CALIBER_CODE;
 import static com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao.FIELD_RECORDED_AT;
@@ -75,7 +76,9 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
     @Override
     public Mono<Long> markEntriesForArchiving(LocalDate cutoff) {
 
-        Query beforeDate = Query.query(Criteria.where(FIELD_RECORDED_AT).lte(cutoff)
+        var adjustedTillEndOfDay = cutoff.atTime(23, 59, 59).atOffset(ZoneOffset.UTC);
+
+        Query beforeDate = Query.query(Criteria.where(FIELD_RECORDED_AT).lte(adjustedTillEndOfDay)
                 .and(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE).ne(ArchivingStatus.ARCHIVED)); //If the entity was already archived do not overwrite it
 
         UpdateDefinition markForArchiving = new Update()
