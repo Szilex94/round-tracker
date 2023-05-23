@@ -21,7 +21,7 @@ public class EntityCleanupAction implements ArchivingAction {
     @Override
     public Mono<Void> apply(StateContext<DataManagementState, DataFlowEvent> dataManagementStateDataFlowEventStateContext) {
         return archivingService.removeArchivedEntities()
-                .doOnNext(removedCount -> log.info("Successfully removed {} of archived entities from short term storage!"))
+                .doOnNext(removedCount -> log.info("Successfully removed {} of archived entities from short term storage!", removedCount))
                 .then();
     }
 }
