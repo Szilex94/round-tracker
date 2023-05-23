@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.rest.support;
+package com.github.szilex94.edu.round_tracker.rest.support.caliber;
 
 import com.github.szilex94.edu.round_tracker.service.support.caliber.CaliberTypeDefinition;
 import org.mapstruct.Mapper;

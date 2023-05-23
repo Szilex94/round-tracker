@@ -5,7 +5,10 @@ import com.github.szilex94.edu.round_tracker.repository.tracking.repository.Trac
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChange;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.AmmunitionChangeSummary;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDate;
 
 @Component
 public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter {
@@ -26,5 +29,21 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
         return repository.recordAmmunitionChange(newEntry)
                 .map(mapper::toAmmunitionChange);
 
+    }
+
+    @Override
+    public Mono<Long> markEntriesForArchiving(LocalDate cutoff) {
+        return repository.markEntriesForArchiving(cutoff);
+    }
+
+    @Override
+    public Flux<AmmunitionChange> transferMarkedEntities() {
+        return repository.transferMarkedEntities()
+                .map(this.mapper::fromDao);
+    }
+
+    @Override
+    public Mono<Long> removeArchivedEntities() {
+        return repository.removeArchivedEntities();
     }
 }

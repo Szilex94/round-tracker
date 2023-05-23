@@ -1,6 +1,6 @@
 package com.github.szilex94.edu.round_tracker.integration;
 
-import com.github.szilex94.edu.round_tracker.rest.support.CaliberTypeDefinitionDto;
+import com.github.szilex94.edu.round_tracker.rest.support.caliber.CaliberTypeDefinitionDto;
 import com.github.szilex94.edu.round_tracker.rest.user.profile.UserProfileDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

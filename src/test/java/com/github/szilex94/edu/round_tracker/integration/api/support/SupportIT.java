@@ -3,7 +3,7 @@ package com.github.szilex94.edu.round_tracker.integration.api.support;
 import com.github.szilex94.edu.round_tracker.integration.BaseTestContainerIT;
 import com.github.szilex94.edu.round_tracker.integration.Endpoints;
 import com.github.szilex94.edu.round_tracker.integration.RestTestUtilities;
-import com.github.szilex94.edu.round_tracker.rest.support.CaliberTypeDefinitionDto;
+import com.github.szilex94.edu.round_tracker.rest.support.caliber.CaliberTypeDefinitionDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

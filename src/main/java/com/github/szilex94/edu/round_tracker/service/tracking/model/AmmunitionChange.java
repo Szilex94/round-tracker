@@ -26,6 +26,8 @@ public final class AmmunitionChange {
 
     private final ChangeType changeType;
 
+    private final boolean archived;
+
     AmmunitionChange(Builder builder) {
         this.id = builder.id;
         this.userId = builder.userId;
@@ -33,6 +35,7 @@ public final class AmmunitionChange {
         this.ammunitionCode = builder.ammunitionCode;
         this.amount = builder.amount;
         this.changeType = builder.changeType;
+        this.archived = builder.archived;
     }
 
     public static Builder builder() {
@@ -63,6 +66,10 @@ public final class AmmunitionChange {
         return ammunitionCode;
     }
 
+    public boolean isArchived() {
+        return archived;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -70,6 +77,7 @@ public final class AmmunitionChange {
                 .add("ammunitionCode", ammunitionCode)
                 .add("amount", amount)
                 .add("changeType", changeType)
+                .add("archived", archived)
                 .toString();
     }
 
@@ -86,6 +94,8 @@ public final class AmmunitionChange {
         int amount;
 
         ChangeType changeType;
+
+        boolean archived;
 
         private Builder() {
             //Restrict visibility
@@ -122,6 +132,11 @@ public final class AmmunitionChange {
 
         public Builder setChangeType(ChangeType changeType) {
             this.changeType = changeType;
+            return this;
+        }
+
+        public Builder setArchived(boolean archived) {
+            this.archived = archived;
             return this;
         }
 

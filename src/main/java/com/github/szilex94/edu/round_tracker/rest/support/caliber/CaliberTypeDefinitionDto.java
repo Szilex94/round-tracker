@@ -1,4 +1,4 @@
-package com.github.szilex94.edu.round_tracker.rest.support;
+package com.github.szilex94.edu.round_tracker.rest.support.caliber;
 
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnCreate;
 import com.github.szilex94.edu.round_tracker.rest.jakarta.OnUpdate;

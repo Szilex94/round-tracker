@@ -32,7 +32,7 @@ public class ProblemDetailFactory {
 
     private final URI baseWikiURI;
 
-    public ProblemDetailFactory(@Value("${documentation.wiki.error-page}") String baseWikiURI) {
+    public ProblemDetailFactory(@Value("${app.documentation.wiki.error-page}") String baseWikiURI) {
         checkArgument(!isNullOrEmpty(baseWikiURI), "Null or empty wiki URI not allowed!");
         this.baseWikiURI = URI.create(baseWikiURI);
     }

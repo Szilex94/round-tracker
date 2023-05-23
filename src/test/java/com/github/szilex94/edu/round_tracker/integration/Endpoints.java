@@ -14,7 +14,7 @@ public final class Endpoints {
      */
     public static final String TRACKING = "round-tracker/v1/user/{userId}/tracking";
 
-    public static final String SUPPORT_CALIBER_DEF = "round-tracker/v1/support/caliberDefinition";
+    public static final String SUPPORT_CALIBER_DEF = "round-tracker/v1/support/caliber";
 
     private Endpoints() {
         //Suppress default constructor
