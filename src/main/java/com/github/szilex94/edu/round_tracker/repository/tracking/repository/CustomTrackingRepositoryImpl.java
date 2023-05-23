@@ -7,6 +7,7 @@ import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionC
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionChangeLogDao.ArchivingStatus;
 import com.github.szilex94.edu.round_tracker.repository.tracking.dao.AmmunitionSummaryDao;
 import com.github.szilex94.edu.round_tracker.service.tracking.model.UnknownAmmunitionCodeException;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -143,6 +144,15 @@ public class CustomTrackingRepositoryImpl implements CustomTrackingRepository {
         UpdateDefinition ud = Update.update(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE, ArchivingStatus.ARCHIVED);
 
         return reactiveMongoTemplate.findAndModify(q, ud, AmmunitionChangeLogDao.class);
+    }
+
+    @Override
+    public Mono<Long> removeArchivedEntities() {
+
+        Query q = Query.query(Criteria.where(AmmunitionChangeLogDao.FIELD_ARCHIVING_STATE).is(ArchivingStatus.ARCHIVED));
+
+        return reactiveMongoTemplate.remove(q, AmmunitionChangeLogDao.class)
+                .map(DeleteResult::getDeletedCount);
     }
 
 }

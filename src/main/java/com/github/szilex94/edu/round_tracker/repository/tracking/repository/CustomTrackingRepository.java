@@ -19,4 +19,6 @@ public interface CustomTrackingRepository {
     Mono<Long> markEntriesForArchiving(LocalDate cutoff);
 
     Flux<AmmunitionChangeLogDao> transferMarkedEntities();
+
+    Mono<Long> removeArchivedEntities();
 }

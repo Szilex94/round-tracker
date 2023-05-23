@@ -32,4 +32,9 @@ public class AmmunitionExpenseTrackingServiceImpl implements AmmunitionExpenseTr
     public Flux<AmmunitionChange> transferMarkedEntities() {
         return repositoryAdapter.transferMarkedEntities();
     }
+
+    @Override
+    public Mono<Long> removeArchivedEntities() {
+        return repositoryAdapter.removeArchivedEntities();
+    }
 }

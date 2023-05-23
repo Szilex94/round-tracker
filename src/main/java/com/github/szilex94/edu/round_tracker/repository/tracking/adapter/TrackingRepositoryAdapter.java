@@ -37,4 +37,11 @@ public interface TrackingRepositoryAdapter {
      * @return a flux consisting of the entities which where transferred
      */
     Flux<AmmunitionChange> transferMarkedEntities();
+
+    /**
+     * Removes all entities which where successfully archived by {@link #transferMarkedEntities()}
+     *
+     * @return a mono containing the number of removed records
+     */
+    Mono<Long> removeArchivedEntities();
 }

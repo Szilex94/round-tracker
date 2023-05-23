@@ -41,4 +41,9 @@ public class TrackingRepositoryAdapterImpl implements TrackingRepositoryAdapter 
         return repository.transferMarkedEntities()
                 .map(this.mapper::fromDao);
     }
+
+    @Override
+    public Mono<Long> removeArchivedEntities() {
+        return repository.removeArchivedEntities();
+    }
 }

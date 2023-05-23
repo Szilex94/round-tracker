@@ -22,4 +22,11 @@ public interface AmmunitionExpenseArchivingService {
      * @return a flux of each entity which was transferred
      */
     Flux<AmmunitionChange> transferMarkedEntities();
+
+    /**
+     * Removes entities which where successfully archived in {@link #transferMarkedEntities()}
+     *
+     * @return the number of elements which where removed
+     */
+    Mono<Long> removeArchivedEntities();
 }
