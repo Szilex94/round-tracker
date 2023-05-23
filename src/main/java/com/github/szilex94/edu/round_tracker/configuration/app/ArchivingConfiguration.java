@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties("app.archiving")
 public record ArchivingConfiguration(
-        @Min(value = 100, message = "Minimum bucket size is restricted to 10!")
+        @Min(value = 10, message = "Minimum bucket size is restricted to 10!")
         @Max(value = 1_000, message = "Max bucket size is restricted to 1000!")
         int bucketSize
 ) {
