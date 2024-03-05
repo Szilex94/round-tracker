@@ -9,10 +9,10 @@ jobs:
   run-unit-tests:
     uses: ./.github/workflows/run-unit-tests.yml
     with:
-      java-version: '17'
+      java-version: '21'
       distribution: 'temurin'
   run-integration-tests:
     uses: ./.github/workflows/run-integration-tests.yml
     with:
-      java-version: '17'
+      java-version: '21'
       distribution: 'temurin'

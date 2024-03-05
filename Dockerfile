@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM openjdk:21
 LABEL Name=round-tracker
 COPY target/round-tracker-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
