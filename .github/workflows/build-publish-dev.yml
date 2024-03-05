@@ -4,8 +4,8 @@ on:
     branches: [ dev ]
 
 env:
-  JAVA_VERSION: "21"
-  JAVA_DISTRIBUTION: "temurin"
+  JAVA_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
 
 jobs:
   build:
